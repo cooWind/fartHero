@@ -4,7 +4,8 @@
 
 ## 游戏引擎：白鹭引擎  
 
-## 开发语言：Typescript (文档)[https://www.tslang.cn/docs/handbook/basic-types.html] 务必通读一遍基本语法（其实语言都差不多)  
+## 开发语言：Typescript  
+[文档](https://www.tslang.cn/docs/handbook/basic-types.html) 务必通读一遍基本语法（其实语言都差不多)  
 
 ## 开发前准备：  
 - git总该会用吧，下载 cmder 工具，clone 本仓库到本地  
@@ -14,7 +15,7 @@
 - 功能开发完毕后，上传到远程仓库 `git push origin feature-分支名称`，然后向 `master` 发起 `pull Request` 请求  
 
 ## 原型：  
-  (原型链接)[https://modao.cc/workspace/apps]  
+  [原型链接](https://modao.cc/workspace/apps) 
   账号密码在qq群里咨询  
 ## 策划：  
   这里放一些游戏玩法，不需太详细， 但一定要有
