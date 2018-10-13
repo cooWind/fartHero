@@ -1,13 +1,15 @@
 # fartHero
-暂定游戏名称为放屁超人
-开发注意事项：利用空闲时间，不要占用上班时间！不需要赶进度！不要求代码量，但要保证基本的代码质量！另外缩进两空格！  
-
+暂定游戏名称为放屁超人  
+开发注意事项：利用空闲时间，不要占用上班时间！不需要赶进度！不要求代码量，但要保证基本的代码质量！  
+方向：键盘左右  
+跳跃: C  
 ## 开发人员  
 ZHAO XIANG XIE DU
 ## 开发工具：  
 [白鹭引擎官网](http://developer.egret.com/cn/)  
 [地图生成器](https://www.mapeditor.org/)  
-
+[p2教程](https://blog.csdn.net/xjh7777/article/details/50396159)
+[p2 github](https://github.com/schteppe/p2.js)
 ## 开发语言：Typescript  
 
 [文档](https://www.tslang.cn/docs/handbook/basic-types.html) 务必通读一遍基本语法（其实语言都差不多)  
