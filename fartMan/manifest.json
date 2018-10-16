@@ -18,6 +18,7 @@
 		"bin-debug/config/game.js",
 		"bin-debug/hero/FartMan.js",
 		"bin-debug/router/flat.js",
-		"bin-debug/static/router.js"
+		"bin-debug/static/router.js",
+		"bin-debug/utils/p2DebugView.js"
 	]
 }

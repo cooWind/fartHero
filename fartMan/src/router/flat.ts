@@ -5,18 +5,71 @@
 class Flat extends egret.Sprite{
     // 刚体世界　
     public world:p2.World
+    //debug 库
+    private debugDraw
     private sh = GameConfig.height / 50
     private sw = GameConfig.height / 50
     
     public constructor(parent){
         super()
         this.addEventListener(egret.Event.ADDED_TO_STAGE,this.addFlat,this);
+        this.addEventListener(egret.Event.ENTER_FRAME, this.loop, this);
     }
-  
+    private createDebug(): void {
+        //创建调试试图
+        this.debugDraw = new p2DebugDraw(this.world);
+        var sprite: egret.Sprite = new egret.Sprite();
+        this.addChild(sprite);
+        this.debugDraw.setSprite(sprite);
+    }
     private async addFlat(){
         this.addBack()
         this.createWorld()
+        this.createPlane()
+        this.createMan()
+        this.createBar()
         this.controlKey()
+        this.createDebug()
+    }
+    // 创建世界
+    private createWorld() {
+        this.world = new p2.World();
+        this.world.sleepMode = p2.World.NO_SLEEPING;
+        // 这玩意儿是求解器
+        this.world.solver = new p2.GSSolver() 
+        this.world.solver['iterations'] = 5
+        this.world.solver['tolerance'] = 0.01
+
+        this.world.gravity = [0, 100];
+        // 设置摩擦力
+        this.world.defaultContactMaterial.friction = 10;
+        // 设置刚度，很硬的那种
+        this.world.setGlobalStiffness(999999900000);
+        this.world.setGlobalRelaxation(1.8)
+        this.world.defaultContactMaterial.restitution = 0;
+        // var iceMaterial = new p2.Material(2);
+        // var steelMaterial = new p2.Material(2);
+        // const factor = 50
+        // // 摩擦配置
+        // var iceSteelContactMaterial: p2.ContactMaterial = new p2.ContactMaterial(iceMaterial,steelMaterial,<p2.ContactMaterialOptions>{surfaceVelocity: 0,restitution:0,friction: .6});
+        // this.world.addContactMaterial(iceSteelContactMaterial);
+        // //添加帧事件侦听
+        // egret.Ticker.getInstance().register((dt) => {
+        //     //使世界时间向后运动
+        //     this.world.step(dt / 1000);
+        //     // 这里更新坐标
+        //     var l = this.world.bodies.length;
+        //     for (var i:number = 0; i < l; i++) {
+        //         var boxBody:p2.Body = this.world.bodies[i];
+        //         var box:egret.DisplayObject = boxBody.displays[0];
+        //         if (box) { 
+        //                 box.x = boxBody.position[0] * factor;
+        //             box.y = -boxBody.position[1] * factor;
+        //         }
+        //     }
+        //     console.log(this.boxX)
+        //     this.boxBody.position[0] += this.boxX
+        // },this);
     }
     // 画一张#333的背景图
     private addBack() {
@@ -31,83 +84,57 @@ class Flat extends egret.Sprite{
     private boxX = 0
     private boxY = 0
     private pbody
-    private createWorld() {
-        var wrd: p2.World = new p2.World();
-        wrd.sleepMode = p2.World.BODY_SLEEPING;
-        wrd.gravity = [0, -10];
-        this.world = wrd;
-        const factor = 50
+    // 创建地面
+    private createPlane() {
         //创建地面       
-        var gshape: p2.Plane = new p2.Plane();
-        var gbody: p2.Body = new p2.Body({
-                position:[0,-this.sh/2],
-                mass: 0
-            });
-        gbody.addShape(gshape);
-        this.world.addBody(gbody)
-        //显示对象
-        var ground: egret.DisplayObject = this.createGround();
-        gbody.displays = [ground];
-        this.addChild(ground);
-        
-        
-        //添加长方形刚体
-        var boxShape: p2.Shape = new p2.Box({
-            width: 1,
-            height: 1
+
+        var stageHeight: number = egret.MainContext.instance.stage.stageHeight;
+        var groundShape: p2.Plane = new p2.Plane();
+        var groundBody: p2.Body = new p2.Body({
+            collisionResponse: true
         });
-        var boxBody: p2.Body = new p2.Body({ mass: 1,position: [this.sw / 2,0],angularVelocity: 3 });
+        groundBody.position[1] = stageHeight -100;
+        groundBody.angle = Math.PI;
+        groundBody.addShape(groundShape);
+
+        this.world.addBody(groundBody);
+    }
+    // 创建人物
+    private createMan() {
+        var boxShape: p2.Shape = new p2.Box({
+            width: 100, 
+            height: 50, 
+            material: new p2.Material(1)
+        });
+        var boxBody: p2.Body = new p2.Body({ 
+            mass: 1, 
+            position: [200, GameConfig.height -125],
+            type: p2.Body.DYNAMIC,
+            fixedRotation: true
+        });
         boxBody.addShape(boxShape);
         this.world.addBody(boxBody);
-        //添加长方形刚体的显示对象   
-        var display: egret.DisplayObject = this.createSprite();
-        display.width = (<p2.Box>boxShape).width * factor;
-        display.height = (<p2.Box>boxShape).height * factor;
-        display.anchorOffsetX = display.width / 2
-        display.anchorOffsetY = display.height / 2;
-        this.display = display
         this.boxBody = boxBody
-        //同步egret对象和p2对象
-        boxBody.displays = [display];
-        this.addChild(display)
-
-        // 创建平台
-        var plat: p2.Box = new p2.Box({
-            width: 1,
-            height: 1
-        });
-        var pbody: p2.Body = new p2.Body({
-                position:[0,-2],
-                mass: 5
-            });
-        pbody.addShape(plat);
-        this.world.addBody(pbody)
-        //显示对象
-        var ground2: egret.DisplayObject = this.createPlat();
-
-        ground2.width = (<p2.Box>plat).width * factor;
-        ground2.height = (<p2.Box>plat).height * factor;
-        ground2.anchorOffsetX = ground2.width / 2
-        ground2.anchorOffsetY = ground2.height / 2;
-        pbody.displays = [ground2];
-        this.addChild(ground2);
-        this.world.addBody(pbody)
-        //添加帧事件侦听
-        egret.Ticker.getInstance().register((dt) => {
-            //使世界时间向后运动
-            this.world.step(dt / 1000);
-            // 这里更新坐标
-            this.boxBody.position[0] += this.boxX
-            ground.x = gbody.position[0] * factor;
-            ground.y = this.sh - gbody.position[1] * factor;
-            display.x = boxBody.position[0] * factor;
-            display.y = this.sh - boxBody.position[1] * factor;
-            ground2.x = pbody.position[0] * factor;
-            ground2.y = this.sh - pbody.position[1] * factor;
-        },this);
     }
-    private addPlat() {
-        
+    // 创建障碍物
+    private createBar() {
+        var boxShape: p2.Shape = new p2.Box({
+            width: 350, 
+            height: 50
+        });
+        var boxBody: p2.Body = new p2.Body({ 
+            mass: 0, 
+            position: [400, GameConfig.height -125],
+            type: p2.Body.STATIC,
+            collisionResponse: true
+        });
+        boxBody.addShape(boxShape);
+        this.world.addBody(boxBody);
+    }    
+    private loop(): void {
+        this.world.step(60 / 1000);
+        this.debugDraw.drawDebug();
+        this.boxBody.position[0] += this.boxX * 100
     }
     //键盘监听
     public controlKey(){
@@ -132,7 +159,7 @@ class Flat extends egret.Sprite{
             console.log(40)
         },upEvent,upSelfEvent);
         keydown_event(67,()=>{  //c 
-            this.boxBody.velocity[1] = 5;
+            this.boxBody.velocity[1] = -100;
             //this.boxBody.position[1]+= .5
         });
         // keydown_event(88,()=>{  // x
@@ -156,14 +183,14 @@ class Flat extends egret.Sprite{
     private createPlat(): egret.Sprite {
         var result: egret.Sprite = new egret.Sprite();
         result.graphics.beginFill(0x0084ff);
-        result.graphics.drawRect(0,0,200,40);
+        result.graphics.drawRect(0,0,0,0);
         result.graphics.endFill();
         return result;
     } 
     private createSprite(): egret.Sprite {
         var result: egret.Sprite = new egret.Sprite();
         result.graphics.beginFill(0x37827A);
-        result.graphics.drawRect(0,0,80,40);
+        result.graphics.drawRect(0,0,0,0);
         result.graphics.endFill();
         return result;
     }
