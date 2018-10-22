@@ -29,6 +29,7 @@ class p2DebugDraw {
                 if (shape instanceof p2.Convex) {
                     this.drawConvex(<p2.Convex>shape, body);
                 } else if (shape instanceof p2.Circle) {
+                    
                     this.drawCircle(<p2.Circle>shape, body);
                 } else if (shape instanceof p2.Line) {
                     this.drawLine(<p2.Line>shape, body);
@@ -124,28 +125,35 @@ class p2DebugDraw {
         g.endFill();
     }
     private drawConvex(shape: p2.Convex, b: p2.Body): void {
-        var color: number = this.getColor(b);
+        // var color: number = this.getColor(b);
 
-        var l: number = shape.vertices.length;
-        var g: egret.Graphics = this.sprite.graphics;
-        g.lineStyle(1, color);
-        g.beginFill(color, 0.5);
+        // var l: number = shape.vertices.length;
+        // var g: egret.Graphics = this.sprite.graphics;
+        // g.lineStyle(1, color);
+        // g.beginFill(color, 0.5);
 
-        var worldPoint: number[] = new Array();
-        b.toWorldFrame(worldPoint, shape.vertices[0]);
-        //g.moveTo(worldPoint[0], worldPoint[1]);
-        g.moveTo(b.position[0], b.position[1]);
-        g.lineTo(worldPoint[0], worldPoint[1]);
-        for (var i: number = 1; i <= l; i++) {
-            b.toWorldFrame(worldPoint, shape.vertices[i % l]);
-            g.lineTo(worldPoint[0], worldPoint[1]);
-        }
+        // var worldPoint: number[] = new Array();
+        // b.toWorldFrame(worldPoint, shape.vertices[0]);
+        // // g.moveTo(worldPoint[0], worldPoint[1]);
+        // g.moveTo(b.position[0], b.position[1]);
+        // g.lineTo(worldPoint[0], worldPoint[1]);
+        // for (var i: number = 1; i <= l; i++) {
+        //     b.toWorldFrame(worldPoint, shape.vertices[i % l]);
+        //     g.lineTo(worldPoint[0], worldPoint[1]);
+        // }
 
 
-        g.endFill();
+        // g.endFill();
     }
 
+    private createBitmapByName(name: string): egret.Bitmap {
+        let result = new egret.Bitmap();
+        let texture: egret.Texture = RES.getRes(name);
+        result.texture = texture;
+        return result;
+    }
     private drawPlane(shape: p2.Plane, b: p2.Body): void {
+        console.log(shape, b)
         var color: number = this.COLOR_D_SLEEP;
         var g: egret.Graphics = this.sprite.graphics;
         g.lineStyle(1, color);

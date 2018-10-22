@@ -9,7 +9,8 @@ ZHAO XIANG XIE DU
 [白鹭引擎官网](http://developer.egret.com/cn/)  
 [地图生成器](https://www.mapeditor.org/)  
 [p2教程](https://blog.csdn.net/xjh7777/article/details/50396159)
-[p2 github](https://github.com/schteppe/p2.js)
+[p2 github](https://github.com/schteppe/p2.js)  
+[p2 中文文档](http://www.dwenzhao.cn/profession/netbuild/egretp2.html)
 ## 开发语言：Typescript  
 
 [文档](https://www.tslang.cn/docs/handbook/basic-types.html) 务必通读一遍基本语法（其实语言都差不多)  
