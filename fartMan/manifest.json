@@ -7,18 +7,20 @@
 		"libs/modules/tween/tween.js",
 		"libs/modules/game/game.js",
 		"libs/modules/physics/physics.js",
+		"libs/modules/tiled/tiled.js",
 		"libs/modules/promise/promise.js"
 	],
 	"game": [
-		"bin-debug/AssetAdapter.js",
-		"bin-debug/LoadingUI.js",
+		"bin-debug/tax/map.js",
+		"bin-debug/config/game.js",
 		"bin-debug/Main.js",
 		"bin-debug/Platform.js",
 		"bin-debug/ThemeAdapter.js",
-		"bin-debug/config/game.js",
+		"bin-debug/LoadingUI.js",
 		"bin-debug/hero/FartMan.js",
 		"bin-debug/router/flat.js",
 		"bin-debug/static/router.js",
+		"bin-debug/AssetAdapter.js",
 		"bin-debug/utils/p2DebugView.js"
 	]
 }

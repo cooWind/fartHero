@@ -9,7 +9,7 @@ interface createBoxConfig {
         position: Object;
         type?: any;
 }
-class Flat extends egret.Sprite{
+class Flat extends gameMap{
     // 刚体世界　
     public world:p2.World
     //debug 库

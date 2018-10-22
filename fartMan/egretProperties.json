@@ -35,6 +35,10 @@
 			"path": "../libsrc"
 		},
 		{
+			"name": "tiled",
+			"path": "../tiled/libsrc"
+		},
+		{
 			"name": "promise"
 		}
 	]
