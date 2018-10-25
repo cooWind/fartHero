@@ -30,7 +30,8 @@ class Flat extends gameMap{
         this.debugDraw.setSprite(sprite);
     }
     private async addFlat(){
-        this.addBack()
+        await this.loadMap()
+        //this.addBack()
         this.createWorld()
         this.createPlane()
         // this.createMan()
@@ -155,15 +156,17 @@ class Flat extends gameMap{
             height: 1,
             position: [100/ 50,100/ 50]
         })
-        this.createBox({
-            width: 1,
-            height: 1,
-            position: [200/ 50,100/ 50],
-            type: p2.Body.STATIC
-        })
+        // this.createBox({
+        //     width: 1,
+        //     height: 1,
+        //     position: [200/ 50,100/ 50],
+        //     type: p2.Body.STATIC
+        // })
     }
     private loop(): void {
         const factor = 50;
+        if(!this.world)
+            return;
         this.world.step(60 / 1000);
         //this.debugDraw.drawDebug();
         this.boxBody.position[0] += this.boxX
@@ -257,11 +260,11 @@ class Flat extends gameMap{
         this.world.addBody(boxBody);
         //添加长方形刚体的显示对象   
         
-        var display: egret.DisplayObject = this.createSprite((<p2.Box>boxShape).width*50, (<p2.Box>boxShape).height*50);
-        this.addChild(display)
-        console.log(display)
+        // var display: egret.DisplayObject = this.createSprite((<p2.Box>boxShape).width*50, (<p2.Box>boxShape).height*50);
+        // this.addChild(display)
+        // console.log(display)
         //同步egret对象和p2对象
-        boxBody.displays = [display];
+        boxBody.displays = [this.tmxtileMap.getLayers()[4].$children[0]];
         return boxBody
     }
     private createSprite(width, height): egret.Sprite {
