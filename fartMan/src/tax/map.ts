@@ -29,11 +29,14 @@
                 var data:any = egret.XML.parse(event.target.data);
                 self.tmxtileMap = new tiled.TMXTilemap(2000, 2000, data, url);
                 self.tmxtileMap.render();
-                console.log('ok')
-                resolve()               
+                console.log('ok')              
                 console.log(self.tmxtileMap)
                 self.addChild(self.tmxtileMap);
-                console.log(self.tmxtileMap.getObjects())
+                const layers = self.tmxtileMap.getLayers()
+                // 延迟一段时间就能得到width
+                setTimeout(()=>{
+                    resolve() 
+                }, 300)
             }, url);
         })
     }

@@ -48,7 +48,7 @@ class Flat extends gameMap{
         // this.world.sleepMode = p2.World.NO_SLEEPING;
         // 这玩意儿是求解器
         this.world.solver = new p2.GSSolver() 
-        this.world.solver['iterations'] = 5
+        this.world.solver['iterations'] = 50
         this.world.solver['tolerance'] = 0.01
         // 设置摩擦力
         this.world.defaultContactMaterial.friction = 10;
@@ -156,6 +156,7 @@ class Flat extends gameMap{
             height: 1,
             position: [100/ 50,100/ 50]
         })
+        this.bindP2Map()
         // this.createBox({
         //     width: 1,
         //     height: 1,
@@ -165,20 +166,21 @@ class Flat extends gameMap{
     }
     private loop(): void {
         const factor = 50;
-        if(!this.world)
+        if(!this.world || !this.boxBody)
             return;
         this.world.step(60 / 1000);
         //this.debugDraw.drawDebug();
         this.boxBody.position[0] += this.boxX
+        // this.boxBody.velocity[0] = this.boxX
         var len:number = this.world.bodies.length;
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
+            if(!body) return;
             var display: egret.DisplayObject = body.displays[0];
             display.x = body.position[0] * 50;                      //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height-body.position[1] * 50;
             display.rotation = body.angle  * 180 / Math.PI;
             const ground = this.world.bodies[0].position
-            
         }
     }
     //键盘监听
@@ -191,11 +193,11 @@ class Flat extends gameMap{
         }
         keydown_event(37,()=>{
             console.log(37)
-                this.boxX = -.1; 
+                this.boxX = -.3; 
         },upEvent,upSelfEvent)
         keydown_event(39,()=>{
             console.log(39)
-                this.boxX = .1;
+                this.boxX = .3;
         },upEvent,upSelfEvent)
         keydown_event(38,()=>{
             console.log(38)
@@ -235,17 +237,77 @@ class Flat extends gameMap{
         return result;
     } 
     /**
+     * 将地图里面的地板砖和p2绑定在一起
+     */
+    private bindP2Map() {
+        const layers = this.tmxtileMap.getLayers()
+        let blocks
+        for(let i = 0, len = layers.length; i < len; i++) {
+            if(layers[i].name === 'hero') {
+                blocks = layers[i]
+            }
+        }
+        console.log(blocks)
+        blocks.$children[0].$children.map(val => {
+            console.log('map1')
+            console.log(val)
+            this.createBlockBox(val)
+        })
+
+    }
+    private createBlockBox(display) {
+
+        const factor = 50
+        console.log(display.width)
+        const boxShape: p2.Shape = new p2.Box({
+            width: display.width / 50,
+            height: display.height / 50
+        });
+
+        display.anchorOffsetX = display.width / 2
+        display.anchorOffsetY = display.height / 2;
+        console.log(display.x, display.y)
+        const position = [
+            display.x / 50,
+        (GameConfig.height-display.y) / 50
+        ]
+        const boxBody: p2.Body = new p2.Body({ 
+            mass: 1,
+            position:position,
+            fixedRotation: true,
+            collisionResponse: true,
+            type: p2.Body.STATIC
+        });
+        boxBody.addShape(boxShape);
+        this.world.addBody(boxBody);
+        boxBody.displays = [display];
+    }
+    /**
      * 可以创建一个刚体对象，内置了白鹭的创建形状的方法,
      * 你无需关注它是如何实现的，你只要将接口中的参数传给它就行
      */
     private createBox(createBoxConfig: createBoxConfig): p2.Body {
+        // const text:tiled.TMXLayer = this.tmxtileMap.getLayers()[4]
+        // const layers = this.tmxtileMap.getLayers()
+        // var hero;
+        // for(let i = 0, len = layers.length; i < len; i++) {
+        //     if(layers[i].name === 'hero') {
+        //         hero = layers[i]
+        //     }
+        // }
+        // const display:tiled.TMXLayer = hero.$children[0]
+        // display.anchorOffsetX = display.width / 2
+        // display.anchorOffsetY = display.height / 2
         const {
-            position,
             width,
-            height
+            height,
+            position
         } = createBoxConfig
-        
-        const factor = 50
+        // const position = [
+        //     display.x / 50,
+        //     display.y / 50
+        // ]
+        // const factor = 50
         const boxShape: p2.Shape = new p2.Box({
             width: width,
             height: height
@@ -260,11 +322,11 @@ class Flat extends gameMap{
         this.world.addBody(boxBody);
         //添加长方形刚体的显示对象   
         
-        // var display: egret.DisplayObject = this.createSprite((<p2.Box>boxShape).width*50, (<p2.Box>boxShape).height*50);
-        // this.addChild(display)
-        // console.log(display)
-        //同步egret对象和p2对象
-        boxBody.displays = [this.tmxtileMap.getLayers()[4].$children[0]];
+        var display: egret.DisplayObject = this.createSprite((<p2.Box>boxShape).width*50, (<p2.Box>boxShape).height*50);
+        this.addChild(display)
+        console.log(display)
+        //同步egret对象和p2对象     
+        boxBody.displays = [display];
         return boxBody
     }
     private createSprite(width, height): egret.Sprite {
