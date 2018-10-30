@@ -188,7 +188,7 @@
    <image width="133" height="160" source="skeleton.png"/>
   </tile>
  </tileset>
- <objectgroup name="parallax">
+ <objectgroup name="parallax" offsetx="-34.6197" offsety="-17.3098">
   <object id="95" gid="7" x="-16.2424" y="452.394" width="384" height="128"/>
   <object id="90" gid="16" x="146.97" y="693.727" width="192" height="192"/>
   <object id="91" gid="2147483655" x="373.939" y="627.121" width="384" height="128"/>
@@ -269,7 +269,7 @@
   <object id="24" gid="53" x="2287.76" y="1198.03" width="128" height="96"/>
   <object id="84" gid="53" x="514.545" y="907.545" width="128" height="96"/>
   <object id="86" gid="52" x="658.667" y="963.606" width="128" height="96"/>
-  <object id="87" gid="31" x="448" y="831" width="256" height="96">
+  <object id="87" gid="31" x="449.018" y="831" width="256" height="96">
    <properties>
     <property name="bodyType" value="static"/>
     <property name="floating" type="bool" value="true"/>
