@@ -7,7 +7,7 @@ interface createBoxConfig {
         position: Object;
         type?: any;
 }
-class FartMan {
+class ManBasic {
     public constructor(){
 
     }

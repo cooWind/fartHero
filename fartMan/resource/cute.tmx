@@ -20,6 +20,11 @@
   <terraintypes>
    <terrain name="sky" tile="-1"/>
   </terraintypes>
+  <tile id="0">
+   <properties>
+    <property name="type" value="block"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="15" name="sky" tilewidth="96" tileheight="96" tilecount="60" columns="10">
   <image source="sky.png" width="960" height="600"/>

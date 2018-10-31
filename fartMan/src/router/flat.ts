@@ -33,7 +33,7 @@ class Flat extends gameMap{
     // 创建物理世界
     private createWorld() {
         this.world = new p2.World({
-            gravity: [0,-9.9]
+            gravity: [0,-29.9]
         });
         // this.world.sleepMode = p2.World.NO_SLEEPING;
         // 这玩意儿是求解器
@@ -43,9 +43,9 @@ class Flat extends gameMap{
         // 设置摩擦力
         this.world.defaultContactMaterial.friction = 10;
         // 设置刚度，很硬的那种
-        this.world.setGlobalStiffness(99999);
-        this.world.setGlobalRelaxation(1.9)
-        this.world.defaultContactMaterial.restitution = 0.1;
+        this.world.defaultContactMaterial.stiffness = 999998888888888888889999;
+        this.world.defaultContactMaterial.relaxation = 2;
+        this.world.defaultContactMaterial.restitution = 0;
     }
     
     private createText() {
@@ -62,15 +62,15 @@ class Flat extends gameMap{
         this.boxBody = boxBody
     }
     private loop(event): void {
-        const fixedTimeStep = 60 / 1000
+        // const fixedTimeStep = 60 / 1000
          let now = egret.getTimer();
         let pass = now - this.timeOnEnterFrame;
         let dt:number = 1000 / pass;
         this.timeOnEnterFrame = egret.getTimer();
         if(!this.world || !this.boxBody)
             return;
-        this.world.step(1/80, dt/1000, 10);
         this.boxBody.position[0] += this.boxX
+        this.world.step(1/60, dt/1000, 30);
         var len:number = this.world.bodies.length;
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
@@ -99,13 +99,13 @@ class Flat extends gameMap{
                 this.boxX = .1;
         },upEvent,upSelfEvent)
         keydown_event(38,()=>{
-            this.boxBody.velocity[1] = 6;
+            this.boxBody.velocity[1] = 12;
         },upEvent,upSelfEvent)
         keydown_event(40,()=>{
             console.log(40)
         },upEvent,upSelfEvent);
         keydown_event(67,()=>{
-            this.boxBody.velocity[1] = 6;
+            this.boxBody.velocity[1] = 12;
         });
         // keydown_event(88,()=>{  // x
         //     this.armature.animation.gotoAndPlay(this.animateArr[5],0,0,1);
@@ -123,18 +123,31 @@ class Flat extends gameMap{
      */
     private bindP2Map() {
         const layers = this.tmxtileMap.getLayers()
-        let blocks
+        let blocks:tiled.TMXLayer;
         for(let i = 0, len = layers.length; i < len; i++) {
             if(layers[i].name === 'hero') {
                 blocks = layers[i]
             }
         }
-        console.log(blocks)
-        blocks.$children[0].$children.map(val => {
-            console.log('map1')
-            console.log(val)
-            this.createBlockBox(val)
-        })
+                console.log(blocks)
+        
+        for(let i = 0; i < blocks.rows; i++) {
+            for(let j = 0; j<blocks.cols; j++) {
+                // 根据像素获取到 TMXTile 对象
+                const block:tiled.TMXTile = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight)
+                if(block) {
+                    console.log(block.bitmap)
+                    this.createBlockBox(block.bitmap)
+                }
+            }
+        }
+        return;
+
+        // blocks.$children[0].$children.map(val => {
+        //     console.log('map1')
+        //     console.log(val)
+        //     this.createBlockBox(val)
+        // })
 
     }
     private createBlockBox(display) {
