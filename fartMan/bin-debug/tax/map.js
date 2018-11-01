@@ -23,7 +23,7 @@ var gameMap = (function (_super) {
             //load complete
             urlLoader.addEventListener(egret.Event.COMPLETE, function (event) {
                 var data = egret.XML.parse(event.target.data);
-                self.tmxtileMap = new tiled.TMXTilemap(2000, 2000, data, url);
+                self.tmxtileMap = new tiled.TMXTilemap(4000, 768, data, url);
                 self.tmxtileMap.render();
                 console.log('ok');
                 console.log(self.tmxtileMap);
