@@ -8,8 +8,9 @@ class Flat extends gameMap{
     public world:p2.World
     private timeOnEnterFrame
     private fartMan:FartMan
-
+    private camerabase:CameraBase;
     private boxBody:p2.Body;
+    public gameLayers:Array<tiled.TMXLayer>;
     private boxX = 0
     private boxY = 0
     // p2 引擎单位是 m 1m = 50px
@@ -23,12 +24,13 @@ class Flat extends gameMap{
         this.timeOnEnterFrame = egret.getTimer();
     }
     private async addFlat(){
-        this.fartMan = new FartMan()
         await this.loadMap()
         this.createWorld()
-        this.controlKey()
-        this.createText()
         this.bindP2Map()
+        this.fartMan = new FartMan()
+        this.camerabase = new CameraBase(this.fartMan, this)
+        this.controlKey()
+        this.createHero()
     }
     // 创建物理世界
     private createWorld() {
@@ -48,7 +50,7 @@ class Flat extends gameMap{
         this.world.defaultContactMaterial.restitution = 0;
     }
     
-    private createText() {
+    private createHero() {
         const {
             boxBody,
             display
@@ -60,32 +62,37 @@ class Flat extends gameMap{
         this.addChild(display)
         this.world.addBody(boxBody)
         this.boxBody = boxBody
+        this.bindFartMan()
+    }
+    // 绑定fartMan的坐标
+    private bindFartMan() {
+        this.fartMan.x = this.boxBody.position[0] * this.factor
+        this.fartMan.y = this.boxBody.position[1] * this.factor
+        this.camerabase.moveCamera()
     }
     private loop(event): void {
-        // const fixedTimeStep = 60 / 1000
-         let now = egret.getTimer();
+        let now = egret.getTimer();
         let pass = now - this.timeOnEnterFrame;
         let dt:number = 1000 / pass;
         this.timeOnEnterFrame = egret.getTimer();
         if(!this.world || !this.boxBody)
             return;
-
         this.world.step(1/60, dt/1000, 30);
-            
         var len:number = this.world.bodies.length;
-        // this.boxBody.position[0] += this.boxX
+        this.boxBody.position[0] += this.boxX
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
             if(!body) return;
-            if(this.boxBody !== body) {
-                body.position[0] += -this.boxX
-            }
+            // if(this.boxBody !== body) {
+            //     body.position[0] += -this.boxX
+            // }
             var display: egret.DisplayObject = body.displays[0];
             display.x = body.position[0] * this.factor;                      //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height - body.position[1] * this.factor;
             display.rotation = body.angle  * 180 / Math.PI;
             const ground = this.world.bodies[0].position
         }
+        this.bindFartMan()
     }
     //键盘监听
     public controlKey(){
@@ -97,11 +104,11 @@ class Flat extends gameMap{
         }
         keydown_event(37,()=>{
             console.log(37)
-                this.boxX = -.2; 
+                this.boxX = -this.fartMan.v;
         },upEvent,upSelfEvent)
         keydown_event(39,()=>{
             console.log(39)
-                this.boxX = .2;
+                this.boxX = this.fartMan.v;
         },upEvent,upSelfEvent)
         keydown_event(38,()=>{
             this.boxBody.velocity[1] = 12;
@@ -129,35 +136,26 @@ class Flat extends gameMap{
     private bindP2Map() {
         const layers = this.tmxtileMap.getLayers()
         let blocks:tiled.TMXLayer;
+        this.gameLayers = layers
         for(let i = 0, len = layers.length; i < len; i++) {
             if(layers[i].name === 'hero') {
                 blocks = layers[i]
             }
         }
-        console.log(blocks.rows, blocks.cols)
-        
+        console.log(blocks.rows)
         for(let i = 0; i < blocks.rows; i++) {
             for(let j = 0; j<blocks.cols; j++) {
                 // 根据像素获取到 TMXTile 对象
                 const block:tiled.TMXTile = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight)
+                // blocks.clearTile(j, i)
                 if(block && block.bitmap) {
-                    console.log(block)
-                    console.log(block.bitmap)
-                    console.log(block.tileset.name)
                     this.createBlockBox(block.bitmap)
                 }
             }
         }
         return;
-
-        // blocks.$children[0].$children.map(val => {
-        //     console.log('map1')
-        //     console.log(val)
-        //     this.createBlockBox(val)
-        // })
-
     }
-    private createBlockBox(display) {
+    public createBlockBox(display) {
         const boxShape: p2.Shape = new p2.Box({
             width: display.width / this.factor,
             height: display.height / this.factor
@@ -175,9 +173,9 @@ class Flat extends gameMap{
             collisionResponse: true,
             type: p2.Body.STATIC
         });
-        console.log(boxBody)
         boxBody.addShape(boxShape);
         this.world.addBody(boxBody);
         boxBody.displays = [display];
+        return boxBody
     }
 }

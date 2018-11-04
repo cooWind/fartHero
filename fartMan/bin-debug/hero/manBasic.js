@@ -3,6 +3,7 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 };
 var ManBasic = (function () {
     function ManBasic() {
+        this.v = .3;
     }
     /**
      * 可以创建一个英雄对象，内置了白鹭的创建形状的方法,

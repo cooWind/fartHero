@@ -67,15 +67,15 @@ var Flat = (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        this.fartMan = new FartMan();
-                        return [4 /*yield*/, this.loadMap()];
+                    case 0: return [4 /*yield*/, this.loadMap()];
                     case 1:
                         _a.sent();
                         this.createWorld();
-                        this.controlKey();
-                        this.createText();
                         this.bindP2Map();
+                        this.fartMan = new FartMan();
+                        this.camerabase = new CameraBase(this.fartMan, this);
+                        this.controlKey();
+                        this.createHero();
                         return [2 /*return*/];
                 }
             });
@@ -98,7 +98,7 @@ var Flat = (function (_super) {
         this.world.defaultContactMaterial.relaxation = 2;
         this.world.defaultContactMaterial.restitution = 0;
     };
-    Flat.prototype.createText = function () {
+    Flat.prototype.createHero = function () {
         var _a = this.fartMan.drawMan({
             width: 1,
             height: 1,
@@ -107,9 +107,15 @@ var Flat = (function (_super) {
         this.addChild(display);
         this.world.addBody(boxBody);
         this.boxBody = boxBody;
+        this.bindFartMan();
+    };
+    // 绑定fartMan的坐标
+    Flat.prototype.bindFartMan = function () {
+        this.fartMan.x = this.boxBody.position[0] * this.factor;
+        this.fartMan.y = this.boxBody.position[1] * this.factor;
+        this.camerabase.moveCamera();
     };
     Flat.prototype.loop = function (event) {
-        // const fixedTimeStep = 60 / 1000
         var now = egret.getTimer();
         var pass = now - this.timeOnEnterFrame;
         var dt = 1000 / pass;
@@ -118,20 +124,21 @@ var Flat = (function (_super) {
             return;
         this.world.step(1 / 60, dt / 1000, 30);
         var len = this.world.bodies.length;
-        // this.boxBody.position[0] += this.boxX
+        this.boxBody.position[0] += this.boxX;
         for (var i = 0; i < len; i++) {
             var body = this.world.bodies[i];
             if (!body)
                 return;
-            if (this.boxBody !== body) {
-                body.position[0] += -this.boxX;
-            }
+            // if(this.boxBody !== body) {
+            //     body.position[0] += -this.boxX
+            // }
             var display = body.displays[0];
             display.x = body.position[0] * this.factor; //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height - body.position[1] * this.factor;
             display.rotation = body.angle * 180 / Math.PI;
             var ground = this.world.bodies[0].position;
         }
+        this.bindFartMan();
     };
     //键盘监听
     Flat.prototype.controlKey = function () {
@@ -144,11 +151,11 @@ var Flat = (function (_super) {
         }
         keydown_event(37, function () {
             console.log(37);
-            _this.boxX = -.2;
+            _this.boxX = -_this.fartMan.v;
         }, upEvent, upSelfEvent);
         keydown_event(39, function () {
             console.log(39);
-            _this.boxX = .2;
+            _this.boxX = _this.fartMan.v;
         }, upEvent, upSelfEvent);
         keydown_event(38, function () {
             _this.boxBody.velocity[1] = 12;
@@ -175,30 +182,24 @@ var Flat = (function (_super) {
     Flat.prototype.bindP2Map = function () {
         var layers = this.tmxtileMap.getLayers();
         var blocks;
+        this.gameLayers = layers;
         for (var i = 0, len = layers.length; i < len; i++) {
             if (layers[i].name === 'hero') {
                 blocks = layers[i];
             }
         }
-        console.log(blocks.rows, blocks.cols);
+        console.log(blocks.rows);
         for (var i = 0; i < blocks.rows; i++) {
             for (var j = 0; j < blocks.cols; j++) {
                 // 根据像素获取到 TMXTile 对象
                 var block = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight);
+                // blocks.clearTile(j, i)
                 if (block && block.bitmap) {
-                    console.log(block);
-                    console.log(block.bitmap);
-                    console.log(block.tileset.name);
                     this.createBlockBox(block.bitmap);
                 }
             }
         }
         return;
-        // blocks.$children[0].$children.map(val => {
-        //     console.log('map1')
-        //     console.log(val)
-        //     this.createBlockBox(val)
-        // })
     };
     Flat.prototype.createBlockBox = function (display) {
         var boxShape = new p2.Box({
@@ -218,10 +219,10 @@ var Flat = (function (_super) {
             collisionResponse: true,
             type: p2.Body.STATIC
         });
-        console.log(boxBody);
         boxBody.addShape(boxShape);
         this.world.addBody(boxBody);
         boxBody.displays = [display];
+        return boxBody;
     };
     return Flat;
 }(gameMap));

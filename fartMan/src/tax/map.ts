@@ -13,7 +13,7 @@
                 //load complete
             urlLoader.addEventListener(egret.Event.COMPLETE, function (event:egret.Event):void {
                 var data:any = egret.XML.parse(event.target.data);
-                self.tmxtileMap = new tiled.TMXTilemap(4000, 768, data, url);
+                self.tmxtileMap = new tiled.TMXTilemap(GameConfig.width, GameConfig.height, data, url);
                 self.tmxtileMap.render();
                 console.log('ok')
                 console.log(self.tmxtileMap)
@@ -21,7 +21,7 @@
                 const layers = self.tmxtileMap.getLayers()
                 // 延迟一段时间就能得到width
                 setTimeout(()=>{
-                    resolve() 
+                    resolve()
                 }, 300)
             }, url);
         })

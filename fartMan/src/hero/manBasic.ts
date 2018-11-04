@@ -8,6 +8,9 @@ interface createBoxConfig {
         type?: any;
 }
 class ManBasic {
+    public x;
+    public y;
+    public v = .3;
     public constructor(){
 
     }
