@@ -58,6 +58,8 @@ var Flat = (function (_super) {
         _this.factor = 50;
         _this.sh = GameConfig.height / 50;
         _this.sw = GameConfig.height / 50;
+        _this.hashTiles = {};
+        _this.renderWidth = 90;
         _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.addFlat, _this);
         _this.addEventListener(egret.Event.ENTER_FRAME, _this.loop, _this);
         _this.timeOnEnterFrame = egret.getTimer();
@@ -96,7 +98,7 @@ var Flat = (function (_super) {
         // 设置刚度，很硬的那种
         this.world.defaultContactMaterial.stiffness = 999998888888888888889999;
         this.world.defaultContactMaterial.relaxation = 2;
-        this.world.defaultContactMaterial.restitution = 0;
+        this.world.defaultContactMaterial.restitution = 1;
     };
     Flat.prototype.createHero = function () {
         var _a = this.fartMan.drawMan({
@@ -125,6 +127,7 @@ var Flat = (function (_super) {
         this.world.step(1 / 60, dt / 1000, 30);
         var len = this.world.bodies.length;
         this.boxBody.position[0] += this.boxX;
+        console.log(len);
         for (var i = 0; i < len; i++) {
             var body = this.world.bodies[i];
             if (!body)
@@ -223,6 +226,55 @@ var Flat = (function (_super) {
         this.world.addBody(boxBody);
         boxBody.displays = [display];
         return boxBody;
+    };
+    Flat.prototype.renderGameMap = function () {
+        var _this = this;
+        var blocks;
+        for (var i = 0, len = this.gameLayers.length; i < len; i++) {
+            if (this.gameLayers[i].name === 'hero') {
+                blocks = this.gameLayers[i];
+            }
+        }
+        // 渲染相关值
+        var x = this.fartMan.x + GameConfig.width;
+        var y = 0;
+        var width = this.renderWidth;
+        var height = GameConfig.height;
+        var rectangle = new egret.Rectangle(x, 0, width, height);
+        blocks.draw(rectangle);
+        var tilewidth = blocks.tilewidth, tileheight = blocks.tileheight;
+        var row = Math.floor((x + this.renderWidth) / tilewidth);
+        var col = Math.floor(height / tileheight);
+        var start = Math.floor(x / tilewidth);
+        for (var i = 0; i < blocks.rows; i++) {
+            for (var j = start; j < row; j++) {
+                if (j >= 120)
+                    return;
+                var block = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight);
+                //　还没有绑定刚体的给它绑定上
+                if (block && block.bitmap && !this.hashTiles[i + "_" + j]) {
+                    var body = this.createBlockBox(block.bitmap);
+                    this.hashTiles[i + "_" + j] = {
+                        block: block,
+                        body: body
+                    };
+                }
+            }
+        }
+        //回收刚体
+        Object.keys(this.hashTiles).forEach(function (val) {
+            var body = _this.hashTiles[val].body;
+            var TMXTile = _this.hashTiles[val].block.bitmap;
+            var x = body.position[0] * 50;
+            var y = body.position[1] * 50;
+            if (body && x + _this.x < 0) {
+                if (TMXTile.parent) {
+                    TMXTile.parent.removeChild(TMXTile);
+                }
+                _this.world.removeBody(body);
+                delete _this.hashTiles[val];
+            }
+        });
     };
     return Flat;
 }(gameMap));

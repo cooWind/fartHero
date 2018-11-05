@@ -19,44 +19,23 @@ var CameraBase = (function () {
         // Flat
         this.gameScene = gameScene;
         this.gameLayers = this.gameScene.gameLayers;
+        this.camerSprite = this.createCamerMask(200, 300);
+        this.gameScene.parent.addChild(this.camerSprite);
+        this.gameScene.mask = this.camerSprite;
     }
     CameraBase.prototype.moveCamera = function () {
         this.gameScene.x = (-this.fartMan.x + this.offsetX) * this.v;
         // this.gameScene.y = - this.fartMan.y + this.offsetY
-        this.renderGameMap();
+        this.gameScene.renderGameMap();
     };
-    CameraBase.prototype.renderGameMap = function () {
-        var blocks;
-        for (var i = 0, len = this.gameLayers.length; i < len; i++) {
-            if (this.gameLayers[i].name === 'hero') {
-                blocks = this.gameLayers[i];
-            }
-        }
-        // 渲染相关值
-        var x = this.fartMan.x + GameConfig.width;
-        var y = 0;
-        var width = this.renderWidth;
-        var height = GameConfig.height;
-        var rectangle = new egret.Rectangle(x, 0, width, height);
-        blocks.draw(rectangle);
-        var tilewidth = blocks.tilewidth, tileheight = blocks.tileheight;
-        var row = Math.floor((x + this.renderWidth) / tilewidth);
-        var col = Math.floor(height / tileheight);
-        var start = Math.floor(x / tilewidth);
-        for (var i = 0; i < blocks.rows; i++) {
-            for (var j = start; j < row; j++) {
-                var block = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight);
-                //　还没有绑定刚体的给它绑定上
-                if (block && block.bitmap && !this.hashTiles[i + "_" + j]) {
-                    var body = this.gameScene.createBlockBox(block.bitmap);
-                    this.hashTiles[i + "_" + j] = {
-                        block: block,
-                        body: body
-                    };
-                }
-                // 回收刚体以及渲染　
-            }
-        }
+    CameraBase.prototype.createCamerMask = function (width, height) {
+        var result = new egret.Sprite();
+        result.graphics.beginFill(0x37827A);
+        result.graphics.drawRect(20, 0, GameConfig.width - 40, GameConfig.height);
+        result.graphics.endFill();
+        result.anchorOffsetX = 0;
+        result.anchorOffsetY = 0;
+        return result;
     };
     return CameraBase;
 }());

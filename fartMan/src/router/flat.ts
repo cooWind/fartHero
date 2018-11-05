@@ -47,7 +47,7 @@ class Flat extends gameMap{
         // 设置刚度，很硬的那种
         this.world.defaultContactMaterial.stiffness = 999998888888888888889999;
         this.world.defaultContactMaterial.relaxation = 2;
-        this.world.defaultContactMaterial.restitution = 0;
+        this.world.defaultContactMaterial.restitution = 1;
     }
     
     private createHero() {
@@ -80,6 +80,7 @@ class Flat extends gameMap{
         this.world.step(1/60, dt/1000, 30);
         var len:number = this.world.bodies.length;
         this.boxBody.position[0] += this.boxX
+        console.log(len)
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
             if(!body) return;
@@ -177,5 +178,61 @@ class Flat extends gameMap{
         this.world.addBody(boxBody);
         boxBody.displays = [display];
         return boxBody
+    }
+
+    private hashTiles = {}
+    private renderWidth = 90;
+    public renderGameMap() {
+        let blocks:tiled.TMXLayer
+        
+        for(let i = 0, len = this.gameLayers.length; i < len; i++) {
+            if(this.gameLayers[i].name === 'hero') {
+                blocks = this.gameLayers[i]
+            }
+        }
+        // 渲染相关值
+        const x = this.fartMan.x + GameConfig.width
+        const y = 0
+        const width = this.renderWidth
+        const height = GameConfig.height
+        const rectangle =new egret.Rectangle(x, 0, width, height);
+        blocks.draw(rectangle)
+        const {
+            tilewidth,
+            tileheight,
+        } = blocks
+        const row = Math.floor((x + this.renderWidth) / tilewidth)
+        const col = Math.floor(height / tileheight)
+        const start = Math.floor(x / tilewidth)
+        for(let i = 0; i < blocks.rows; i++) {
+            for(let j = start; j< row; j++) {
+                if(j >= 120)
+                    return;
+                const block:tiled.TMXTile = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight)
+                //　还没有绑定刚体的给它绑定上
+                if(block && block.bitmap && !this.hashTiles[`${i}_${j}`]) {
+                    const body = this.createBlockBox(block.bitmap)
+                    this.hashTiles[`${i}_${j}`] = {
+                        block,
+                        body
+                    }
+                    
+                }
+            }
+        }
+        //回收刚体
+        Object.keys(this.hashTiles).forEach((val) => {
+            let body:p2.Body = this.hashTiles[val].body
+            let TMXTile:tiled.TMXTile = this.hashTiles[val].block.bitmap
+            const x = body.position[0] * 50
+            const y = body.position[1] * 50
+            if(body && x + this.x < 0) {
+                if(TMXTile.parent) {
+                    TMXTile.parent.removeChild(TMXTile)
+                }
+                this.world.removeBody(body)
+                delete this.hashTiles[val]
+            }
+        })
     }
 }
