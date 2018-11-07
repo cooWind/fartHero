@@ -92,19 +92,31 @@ var Flat = (function (_super) {
         // 这玩意儿是求解器
         this.world.solver = new p2.GSSolver();
         this.world.solver['iterations'] = 10;
-        this.world.solver['tolerance'] = 0;
+        this.world.solver['tolerance'] = 2;
         // 设置摩擦力
-        this.world.defaultContactMaterial.friction = 10;
+        this.world.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
-        this.world.defaultContactMaterial.stiffness = 999998888888888888889999;
-        this.world.defaultContactMaterial.relaxation = 2;
-        this.world.defaultContactMaterial.restitution = 1;
+        this.world.defaultContactMaterial.stiffness = 9999999999999999999999;
+        this.world.defaultContactMaterial.relaxation = 4;
+        this.world.defaultContactMaterial.restitution = 0;
+        var ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, {
+            friction: 1,
+            stiffness: 9999999999999999999999,
+            relaxation: 2
+        });
+        this.world.addContactMaterial(ContactMaterial);
+        this.world.on('postBroadphase', function (ev) {
+            var pairs = ev.pairs;
+            pairs.forEach(function (val) {
+                // console.log(val.position)
+            });
+        });
     };
     Flat.prototype.createHero = function () {
         var _a = this.fartMan.drawMan({
             width: 1,
             height: 1,
-            position: [250 / this.factor, 150 / this.factor]
+            position: [4, 3]
         }), boxBody = _a.boxBody, display = _a.display;
         this.addChild(display);
         this.world.addBody(boxBody);
@@ -126,15 +138,12 @@ var Flat = (function (_super) {
             return;
         this.world.step(1 / 60, dt / 1000, 30);
         var len = this.world.bodies.length;
-        this.boxBody.position[0] += this.boxX;
+        this.boxBody.position[0] += this.boxX / 2;
         console.log(len);
         for (var i = 0; i < len; i++) {
             var body = this.world.bodies[i];
             if (!body)
                 return;
-            // if(this.boxBody !== body) {
-            //     body.position[0] += -this.boxX
-            // }
             var display = body.displays[0];
             display.x = body.position[0] * this.factor; //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height - body.position[1] * this.factor;
@@ -150,21 +159,17 @@ var Flat = (function (_super) {
             _this.boxX = 0;
         };
         function upSelfEvent() {
-            console.log('各自回调');
         }
         keydown_event(37, function () {
-            console.log(37);
             _this.boxX = -_this.fartMan.v;
         }, upEvent, upSelfEvent);
         keydown_event(39, function () {
-            console.log(39);
             _this.boxX = _this.fartMan.v;
         }, upEvent, upSelfEvent);
         keydown_event(38, function () {
             _this.boxBody.velocity[1] = 12;
         }, upEvent, upSelfEvent);
         keydown_event(40, function () {
-            console.log(40);
         }, upEvent, upSelfEvent);
         keydown_event(67, function () {
             _this.boxBody.velocity[1] = 12;
@@ -191,14 +196,18 @@ var Flat = (function (_super) {
                 blocks = layers[i];
             }
         }
-        console.log(blocks.rows);
+        console.log(blocks.rows, blocks.rows);
         for (var i = 0; i < blocks.rows; i++) {
             for (var j = 0; j < blocks.cols; j++) {
                 // 根据像素获取到 TMXTile 对象
                 var block = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight);
                 // blocks.clearTile(j, i)
                 if (block && block.bitmap) {
-                    this.createBlockBox(block.bitmap);
+                    var body = this.createBlockBox(block.bitmap);
+                    // this.hashTiles[`${i}_${j}`] = {
+                    //     block,
+                    //     body
+                    // }
                 }
             }
         }
@@ -209,10 +218,11 @@ var Flat = (function (_super) {
             width: display.width / this.factor,
             height: display.height / this.factor
         });
+        boxShape.material = GameConfig.wallMaterial;
         display.anchorOffsetX = display.width / 2;
         display.anchorOffsetY = display.height / 2;
         var position = [
-            display.x / this.factor,
+            (display.x) / this.factor,
             (GameConfig.height - display.y) / this.factor
         ];
         var boxBody = new p2.Body({
@@ -220,7 +230,8 @@ var Flat = (function (_super) {
             position: position,
             fixedRotation: true,
             collisionResponse: true,
-            type: p2.Body.STATIC
+            type: p2.Body.KINEMATIC,
+            allowSleep: false
         });
         boxBody.addShape(boxShape);
         this.world.addBody(boxBody);
@@ -245,7 +256,7 @@ var Flat = (function (_super) {
         var tilewidth = blocks.tilewidth, tileheight = blocks.tileheight;
         var row = Math.floor((x + this.renderWidth) / tilewidth);
         var col = Math.floor(height / tileheight);
-        var start = Math.floor(x / tilewidth);
+        var start = 0;
         for (var i = 0; i < blocks.rows; i++) {
             for (var j = start; j < row; j++) {
                 if (j >= 120)
@@ -265,8 +276,8 @@ var Flat = (function (_super) {
         Object.keys(this.hashTiles).forEach(function (val) {
             var body = _this.hashTiles[val].body;
             var TMXTile = _this.hashTiles[val].block.bitmap;
-            var x = body.position[0] * 50;
-            var y = body.position[1] * 50;
+            var x = TMXTile.x;
+            var y = TMXTile.y;
             if (body && x + _this.x < 0) {
                 if (TMXTile.parent) {
                     TMXTile.parent.removeChild(TMXTile);

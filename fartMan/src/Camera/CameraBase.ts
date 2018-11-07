@@ -19,7 +19,7 @@ class CameraBase {
     private renderWidth = 100;
     private renderOffsetX = 200;
     // 相机移动速度
-    private v = 1;
+    private v = 200;
     private bindBodys:Array<p2.Body>;
     private hashTiles = {}
     public camerSprite:egret.Sprite
@@ -28,12 +28,18 @@ class CameraBase {
         // Flat
         this.gameScene = gameScene
         this.gameLayers = this.gameScene.gameLayers
-        this.camerSprite = this.createCamerMask(200, 300)
+        this.camerSprite = this.createCamerMask(GameConfig.width, GameConfig.height)
         this.gameScene.parent.addChild(this.camerSprite)
         this.gameScene.mask = this.camerSprite
     }
     public moveCamera() {
-        this.gameScene.x =  (-this.fartMan.x + this.offsetX) * this.v
+        // this.gameScene.x =
+        egret.Tween
+            .get(this.gameScene)
+            .to( {
+                x: (-this.fartMan.x + this.offsetX)
+            }, this.v, egret.Ease.quadIn ).call(()=>{
+            });
         // this.gameScene.y = - this.fartMan.y + this.offsetY
         this.gameScene.renderGameMap()
     }

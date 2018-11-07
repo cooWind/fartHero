@@ -4,6 +4,9 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 var GameConfig = (function () {
     function GameConfig() {
     }
+    // 材料
+    GameConfig.manMaterial = new p2.Material(1);
+    GameConfig.wallMaterial = new p2.Material(2);
     return GameConfig;
 }());
 __reflect(GameConfig.prototype, "GameConfig");

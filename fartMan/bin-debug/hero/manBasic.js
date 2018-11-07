@@ -3,7 +3,7 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 };
 var ManBasic = (function () {
     function ManBasic() {
-        this.v = .3;
+        this.v = .2;
     }
     /**
      * 可以创建一个英雄对象，内置了白鹭的创建形状的方法,
@@ -15,10 +15,13 @@ var ManBasic = (function () {
             width: width,
             height: height
         });
+        boxShape.material = GameConfig.manMaterial;
         var boxBody = new p2.Body({
             mass: 1,
             position: position,
-            fixedRotation: true
+            fixedRotation: true,
+            allowSleep: false,
+            ccdIterations: 40
         });
         boxBody.addShape(boxShape);
         //添加长方形刚体的显示对象   

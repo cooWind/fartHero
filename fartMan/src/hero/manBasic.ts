@@ -10,7 +10,7 @@ interface createBoxConfig {
 class ManBasic {
     public x;
     public y;
-    public v = .3;
+    public v = .2;
     public constructor(){
 
     }
@@ -19,7 +19,6 @@ class ManBasic {
      * 你无需关注它是如何实现的，你只要将接口中的参数传给它就行
      */
     public drawMan(createBoxConfig: createBoxConfig) {
-        
         const {
             width,
             height,
@@ -29,10 +28,13 @@ class ManBasic {
             width: width,
             height: height
         });
+        boxShape.material = GameConfig.manMaterial
         const boxBody: p2.Body = new p2.Body({ 
             mass: 1,
             position:position,
-            fixedRotation: true
+            fixedRotation: true,
+            allowSleep: false,
+            ccdIterations: 40
         });
         boxBody.addShape(boxShape);
         //添加长方形刚体的显示对象   

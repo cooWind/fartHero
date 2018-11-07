@@ -41,13 +41,25 @@ class Flat extends gameMap{
         // 这玩意儿是求解器
         this.world.solver = new p2.GSSolver() 
         this.world.solver['iterations'] = 10
-        this.world.solver['tolerance'] = 0
+        this.world.solver['tolerance'] = 2
         // 设置摩擦力
-        this.world.defaultContactMaterial.friction = 10;
+        this.world.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
-        this.world.defaultContactMaterial.stiffness = 999998888888888888889999;
-        this.world.defaultContactMaterial.relaxation = 2;
-        this.world.defaultContactMaterial.restitution = 1;
+        this.world.defaultContactMaterial.stiffness = 9999999999999999999999;
+        this.world.defaultContactMaterial.relaxation = 4;
+        this.world.defaultContactMaterial.restitution = 0;
+        let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
+            friction : 1,
+            stiffness: 9999999999999999999999,
+            relaxation: 2
+        });
+        this.world.addContactMaterial(ContactMaterial)
+        this.world.on('postBroadphase',(ev) => {
+            const pairs = ev.pairs;
+            pairs.forEach((val:p2.Body) => {
+                // console.log(val.position)
+            })
+        })
     }
     
     private createHero() {
@@ -57,7 +69,7 @@ class Flat extends gameMap{
         } = this.fartMan.drawMan({
             width: 1,
             height: 1,
-            position: [250 / this.factor,150/ this.factor]
+            position: [4,3]
         })
         this.addChild(display)
         this.world.addBody(boxBody)
@@ -79,14 +91,11 @@ class Flat extends gameMap{
             return;
         this.world.step(1/60, dt/1000, 30);
         var len:number = this.world.bodies.length;
-        this.boxBody.position[0] += this.boxX
+        this.boxBody.position[0] += this.boxX / 2
         console.log(len)
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
             if(!body) return;
-            // if(this.boxBody !== body) {
-            //     body.position[0] += -this.boxX
-            // }
             var display: egret.DisplayObject = body.displays[0];
             display.x = body.position[0] * this.factor;                      //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height - body.position[1] * this.factor;
@@ -101,21 +110,18 @@ class Flat extends gameMap{
             this.boxX = 0           
         }
         function upSelfEvent() {
-            console.log('各自回调')
         }
         keydown_event(37,()=>{
-            console.log(37)
                 this.boxX = -this.fartMan.v;
         },upEvent,upSelfEvent)
         keydown_event(39,()=>{
-            console.log(39)
                 this.boxX = this.fartMan.v;
         },upEvent,upSelfEvent)
         keydown_event(38,()=>{
             this.boxBody.velocity[1] = 12;
         },upEvent,upSelfEvent)
         keydown_event(40,()=>{
-            console.log(40)
+
         },upEvent,upSelfEvent);
         keydown_event(67,()=>{
             this.boxBody.velocity[1] = 12;
@@ -143,14 +149,18 @@ class Flat extends gameMap{
                 blocks = layers[i]
             }
         }
-        console.log(blocks.rows)
+        console.log(blocks.rows, blocks.rows)
         for(let i = 0; i < blocks.rows; i++) {
             for(let j = 0; j<blocks.cols; j++) {
                 // 根据像素获取到 TMXTile 对象
                 const block:tiled.TMXTile = blocks.getTile(j * blocks.tilewidth, i * blocks.tileheight)
                 // blocks.clearTile(j, i)
                 if(block && block.bitmap) {
-                    this.createBlockBox(block.bitmap)
+                    const body = this.createBlockBox(block.bitmap)
+                    // this.hashTiles[`${i}_${j}`] = {
+                    //     block,
+                    //     body
+                    // }
                 }
             }
         }
@@ -161,18 +171,19 @@ class Flat extends gameMap{
             width: display.width / this.factor,
             height: display.height / this.factor
         });
-
+        boxShape.material = GameConfig.wallMaterial
         display.anchorOffsetX = display.width / 2
         display.anchorOffsetY = display.height / 2;
         const position = [
-            display.x / this.factor,
+            (display.x)/ this.factor,
             (GameConfig.height-display.y) / this.factor]
         const boxBody: p2.Body = new p2.Body({ 
             mass: 1,
             position:position,
             fixedRotation: true,
             collisionResponse: true,
-            type: p2.Body.STATIC
+            type: p2.Body.KINEMATIC,
+            allowSleep: false
         });
         boxBody.addShape(boxShape);
         this.world.addBody(boxBody);
@@ -184,7 +195,6 @@ class Flat extends gameMap{
     private renderWidth = 90;
     public renderGameMap() {
         let blocks:tiled.TMXLayer
-        
         for(let i = 0, len = this.gameLayers.length; i < len; i++) {
             if(this.gameLayers[i].name === 'hero') {
                 blocks = this.gameLayers[i]
@@ -203,7 +213,7 @@ class Flat extends gameMap{
         } = blocks
         const row = Math.floor((x + this.renderWidth) / tilewidth)
         const col = Math.floor(height / tileheight)
-        const start = Math.floor(x / tilewidth)
+        const start = 0
         for(let i = 0; i < blocks.rows; i++) {
             for(let j = start; j< row; j++) {
                 if(j >= 120)
@@ -216,7 +226,6 @@ class Flat extends gameMap{
                         block,
                         body
                     }
-                    
                 }
             }
         }
@@ -224,8 +233,8 @@ class Flat extends gameMap{
         Object.keys(this.hashTiles).forEach((val) => {
             let body:p2.Body = this.hashTiles[val].body
             let TMXTile:tiled.TMXTile = this.hashTiles[val].block.bitmap
-            const x = body.position[0] * 50
-            const y = body.position[1] * 50
+            const x = TMXTile.x
+            const y = TMXTile.y
             if(body && x + this.x < 0) {
                 if(TMXTile.parent) {
                     TMXTile.parent.removeChild(TMXTile)

@@ -13,18 +13,24 @@ var CameraBase = (function () {
         this.renderWidth = 100;
         this.renderOffsetX = 200;
         // 相机移动速度
-        this.v = 1;
+        this.v = 200;
         this.hashTiles = {};
         this.fartMan = fartMan;
         // Flat
         this.gameScene = gameScene;
         this.gameLayers = this.gameScene.gameLayers;
-        this.camerSprite = this.createCamerMask(200, 300);
+        this.camerSprite = this.createCamerMask(GameConfig.width, GameConfig.height);
         this.gameScene.parent.addChild(this.camerSprite);
         this.gameScene.mask = this.camerSprite;
     }
     CameraBase.prototype.moveCamera = function () {
-        this.gameScene.x = (-this.fartMan.x + this.offsetX) * this.v;
+        // this.gameScene.x =
+        egret.Tween
+            .get(this.gameScene)
+            .to({
+            x: (-this.fartMan.x + this.offsetX)
+        }, this.v, egret.Ease.quadIn).call(function () {
+        });
         // this.gameScene.y = - this.fartMan.y + this.offsetY
         this.gameScene.renderGameMap();
     };
