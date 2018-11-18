@@ -11,8 +11,7 @@ class MonsterMan extends MonBasic {
         this.addMonster()
     }
     private addMonster() {
-        // this.movieName = 'hero'
-        // this.movieScale = .5
-        // this.movieArray = ['hero_1', 'hero_2', 'hero_3']
+        this.movieName = 'hero'
+        this.movieArray = ['stand', 'walk', 'jump']
     }
 }
