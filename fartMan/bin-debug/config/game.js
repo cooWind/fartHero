@@ -7,6 +7,7 @@ var GameConfig = (function () {
     // 材料
     GameConfig.manMaterial = new p2.Material(1);
     GameConfig.wallMaterial = new p2.Material(2);
+    GameConfig.domainUrl = 'https://cangnanshi.com/bingo/';
     return GameConfig;
 }());
 __reflect(GameConfig.prototype, "GameConfig");

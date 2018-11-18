@@ -9,14 +9,12 @@ class Flat extends gameMap{
     private timeOnEnterFrame
     private fartMan:FartMan
     private camerabase:CameraBase;
-    private boxBody:p2.Body;
     public gameLayers:Array<tiled.TMXLayer>;
-    private boxX = 0
-    private boxY = 0
     // p2 引擎单位是 m 1m = 50px
     private factor = 50
     private sh = GameConfig.height / 50
     private sw = GameConfig.height / 50
+    private monBasic:MonBasic
     public constructor(parent){
         super()
         this.addEventListener(egret.Event.ADDED_TO_STAGE,this.addFlat,this);
@@ -29,7 +27,10 @@ class Flat extends gameMap{
         this.bindP2Map()
         this.fartMan = new FartMan()
         this.camerabase = new CameraBase(this.fartMan, this)
-        this.controlKey()
+        // 创建一个怪物
+        this.monBasic = new MonsterMan()
+        this.createMonster()
+        // 主角
         this.createHero()
     }
     // 创建物理世界
@@ -66,20 +67,23 @@ class Flat extends gameMap{
         const {
             boxBody,
             display
-        } = this.fartMan.drawMan({
-            width: 1,
-            height: 1,
-            position: [4,3]
-        })
+        } = this.fartMan.drawMan()
         this.addChild(display)
         this.world.addBody(boxBody)
-        this.boxBody = boxBody
         this.bindFartMan()
+    }
+    private createMonster() {
+        const {
+            boxBody,
+            display
+        } = this.monBasic.drawMonster()
+        this.addChild(display)
+        this.world.addBody(boxBody)
     }
     // 绑定fartMan的坐标
     private bindFartMan() {
-        this.fartMan.x = this.boxBody.position[0] * this.factor
-        this.fartMan.y = this.boxBody.position[1] * this.factor
+        this.fartMan.x = this.fartMan.boxBody.position[0] * this.factor
+        this.fartMan.y = this.fartMan.boxBody.position[1] * this.factor
         this.camerabase.moveCamera()
     }
     private loop(event): void {
@@ -87,55 +91,22 @@ class Flat extends gameMap{
         let pass = now - this.timeOnEnterFrame;
         let dt:number = 1000 / pass;
         this.timeOnEnterFrame = egret.getTimer();
-        if(!this.world || !this.boxBody)
+        if(!this.world || !this.fartMan.boxBody)
             return;
-        this.world.step(1/60, dt/1000, 30);
+        this.world.step(1/80, dt/1000, 30);
         var len:number = this.world.bodies.length;
-        this.boxBody.position[0] += this.boxX / 2
-        console.log(len)
+        this.fartMan.boxBody.position[0] += this.fartMan.moveX / 2
         for(var i: number = 0;i < len;i++) {
             var body: p2.Body = this.world.bodies[i];
             if(!body) return;
             var display: egret.DisplayObject = body.displays[0];
             display.x = body.position[0] * this.factor;                      //同步刚体和egret显示对象的位置和旋转角度
             display.y = GameConfig.height - body.position[1] * this.factor;
+            
             display.rotation = body.angle  * 180 / Math.PI;
             const ground = this.world.bodies[0].position
         }
         this.bindFartMan()
-    }
-    //键盘监听
-    public controlKey(){
-        let upEvent = (ev)=> {
-            this.boxX = 0           
-        }
-        function upSelfEvent() {
-        }
-        keydown_event(37,()=>{
-                this.boxX = -this.fartMan.v;
-        },upEvent,upSelfEvent)
-        keydown_event(39,()=>{
-                this.boxX = this.fartMan.v;
-        },upEvent,upSelfEvent)
-        keydown_event(38,()=>{
-            this.boxBody.velocity[1] = 12;
-        },upEvent,upSelfEvent)
-        keydown_event(40,()=>{
-
-        },upEvent,upSelfEvent);
-        keydown_event(67,()=>{
-            this.boxBody.velocity[1] = 12;
-        });
-        // keydown_event(88,()=>{  // x
-        //     this.armature.animation.gotoAndPlay(this.animateArr[5],0,0,1);
-        // });
-        
-        // keydown_event(90,()=>{  // z
-        //     this.armature.animation.gotoAndPlay(this.animateArr[6],0,0,1);
-        // });
-        // keydown_event(65,()=>{  // a
-        //     this.armature.animation.gotoAndPlay(this.animateArr[7],0,0,1);
-        // });
     }
     /**
      * 将地图里面的地板砖和p2绑定在一起
@@ -157,10 +128,6 @@ class Flat extends gameMap{
                 // blocks.clearTile(j, i)
                 if(block && block.bitmap) {
                     const body = this.createBlockBox(block.bitmap)
-                    // this.hashTiles[`${i}_${j}`] = {
-                    //     block,
-                    //     body
-                    // }
                 }
             }
         }
@@ -178,7 +145,7 @@ class Flat extends gameMap{
             (display.x)/ this.factor,
             (GameConfig.height-display.y) / this.factor]
         const boxBody: p2.Body = new p2.Body({ 
-            mass: 1,
+            mass: 0,
             position:position,
             fixedRotation: true,
             collisionResponse: true,

@@ -52,8 +52,6 @@ var Flat = (function (_super) {
     __extends(Flat, _super);
     function Flat(parent) {
         var _this = _super.call(this) || this;
-        _this.boxX = 0;
-        _this.boxY = 0;
         // p2 引擎单位是 m 1m = 50px
         _this.factor = 50;
         _this.sh = GameConfig.height / 50;
@@ -76,7 +74,10 @@ var Flat = (function (_super) {
                         this.bindP2Map();
                         this.fartMan = new FartMan();
                         this.camerabase = new CameraBase(this.fartMan, this);
-                        this.controlKey();
+                        // 创建一个怪物
+                        this.monBasic = new MonsterMan();
+                        this.createMonster();
+                        // 主角
                         this.createHero();
                         return [2 /*return*/];
                 }
@@ -113,20 +114,20 @@ var Flat = (function (_super) {
         });
     };
     Flat.prototype.createHero = function () {
-        var _a = this.fartMan.drawMan({
-            width: 1,
-            height: 1,
-            position: [4, 3]
-        }), boxBody = _a.boxBody, display = _a.display;
+        var _a = this.fartMan.drawMan(), boxBody = _a.boxBody, display = _a.display;
         this.addChild(display);
         this.world.addBody(boxBody);
-        this.boxBody = boxBody;
         this.bindFartMan();
+    };
+    Flat.prototype.createMonster = function () {
+        var _a = this.monBasic.drawMonster(), boxBody = _a.boxBody, display = _a.display;
+        this.addChild(display);
+        this.world.addBody(boxBody);
     };
     // 绑定fartMan的坐标
     Flat.prototype.bindFartMan = function () {
-        this.fartMan.x = this.boxBody.position[0] * this.factor;
-        this.fartMan.y = this.boxBody.position[1] * this.factor;
+        this.fartMan.x = this.fartMan.boxBody.position[0] * this.factor;
+        this.fartMan.y = this.fartMan.boxBody.position[1] * this.factor;
         this.camerabase.moveCamera();
     };
     Flat.prototype.loop = function (event) {
@@ -134,12 +135,11 @@ var Flat = (function (_super) {
         var pass = now - this.timeOnEnterFrame;
         var dt = 1000 / pass;
         this.timeOnEnterFrame = egret.getTimer();
-        if (!this.world || !this.boxBody)
+        if (!this.world || !this.fartMan.boxBody)
             return;
-        this.world.step(1 / 60, dt / 1000, 30);
+        this.world.step(1 / 80, dt / 1000, 30);
         var len = this.world.bodies.length;
-        this.boxBody.position[0] += this.boxX / 2;
-        console.log(len);
+        this.fartMan.boxBody.position[0] += this.fartMan.moveX / 2;
         for (var i = 0; i < len; i++) {
             var body = this.world.bodies[i];
             if (!body)
@@ -151,38 +151,6 @@ var Flat = (function (_super) {
             var ground = this.world.bodies[0].position;
         }
         this.bindFartMan();
-    };
-    //键盘监听
-    Flat.prototype.controlKey = function () {
-        var _this = this;
-        var upEvent = function (ev) {
-            _this.boxX = 0;
-        };
-        function upSelfEvent() {
-        }
-        keydown_event(37, function () {
-            _this.boxX = -_this.fartMan.v;
-        }, upEvent, upSelfEvent);
-        keydown_event(39, function () {
-            _this.boxX = _this.fartMan.v;
-        }, upEvent, upSelfEvent);
-        keydown_event(38, function () {
-            _this.boxBody.velocity[1] = 12;
-        }, upEvent, upSelfEvent);
-        keydown_event(40, function () {
-        }, upEvent, upSelfEvent);
-        keydown_event(67, function () {
-            _this.boxBody.velocity[1] = 12;
-        });
-        // keydown_event(88,()=>{  // x
-        //     this.armature.animation.gotoAndPlay(this.animateArr[5],0,0,1);
-        // });
-        // keydown_event(90,()=>{  // z
-        //     this.armature.animation.gotoAndPlay(this.animateArr[6],0,0,1);
-        // });
-        // keydown_event(65,()=>{  // a
-        //     this.armature.animation.gotoAndPlay(this.animateArr[7],0,0,1);
-        // });
     };
     /**
      * 将地图里面的地板砖和p2绑定在一起
@@ -204,10 +172,6 @@ var Flat = (function (_super) {
                 // blocks.clearTile(j, i)
                 if (block && block.bitmap) {
                     var body = this.createBlockBox(block.bitmap);
-                    // this.hashTiles[`${i}_${j}`] = {
-                    //     block,
-                    //     body
-                    // }
                 }
             }
         }
@@ -226,7 +190,7 @@ var Flat = (function (_super) {
             (GameConfig.height - display.y) / this.factor
         ];
         var boxBody = new p2.Body({
-            mass: 1,
+            mass: 0,
             position: position,
             fixedRotation: true,
             collisionResponse: true,

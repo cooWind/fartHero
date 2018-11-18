@@ -7,13 +7,13 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 var CameraBase = (function () {
     function CameraBase(fartMan, gameScene) {
         // 跟随偏移量
-        this.offsetX = 200;
+        this.offsetX = 700;
         this.offsetY = 140;
         // 渲染相关值
         this.renderWidth = 100;
         this.renderOffsetX = 200;
         // 相机移动速度
-        this.v = 200;
+        this.v = 400;
         this.hashTiles = {};
         this.fartMan = fartMan;
         // Flat
@@ -25,19 +25,16 @@ var CameraBase = (function () {
     }
     CameraBase.prototype.moveCamera = function () {
         // this.gameScene.x =
-        egret.Tween
-            .get(this.gameScene)
-            .to({
-            x: (-this.fartMan.x + this.offsetX)
-        }, this.v, egret.Ease.quadIn).call(function () {
-        });
-        // this.gameScene.y = - this.fartMan.y + this.offsetY
+        var x = (-this.fartMan.x + this.offsetX);
+        if (x > 0)
+            return;
+        egret.Tween.get(this.gameScene).to({ x: x }, this.v, egret.Ease.quadIn);
         this.gameScene.renderGameMap();
     };
     CameraBase.prototype.createCamerMask = function (width, height) {
         var result = new egret.Sprite();
         result.graphics.beginFill(0x37827A);
-        result.graphics.drawRect(20, 0, GameConfig.width - 40, GameConfig.height);
+        result.graphics.drawRect(0, 0, GameConfig.width, GameConfig.height);
         result.graphics.endFill();
         result.anchorOffsetX = 0;
         result.anchorOffsetY = 0;

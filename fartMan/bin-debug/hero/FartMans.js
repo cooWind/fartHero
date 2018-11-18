@@ -11,8 +11,56 @@ r.prototype = e.prototype, t.prototype = new r();
 var FartMan = (function (_super) {
     __extends(FartMan, _super);
     function FartMan() {
-        return _super.call(this) || this;
+        var _this = _super.call(this) || this;
+        _this.v = .2;
+        _this.width = 1;
+        _this.height = 2.38;
+        _this.position = [10, 3];
+        // 移动累加值
+        _this.moveX = 0;
+        _this.addHero();
+        _this.controlKey();
+        return _this;
     }
+    FartMan.prototype.addHero = function () {
+        this.movieName = 'hero';
+        this.movieScale = .5;
+        this.movieArray = ['stand', 'walk', 'jump'];
+    };
+    //键盘监听
+    FartMan.prototype.controlKey = function () {
+        var _this = this;
+        var upEvent = function (ev) {
+            _this.moveX = 0;
+        };
+        function upSelfEvent() {
+        }
+        keydown_event(37, function () {
+            _this.moveX = -_this.v;
+        }, upEvent, upSelfEvent);
+        keydown_event(39, function () {
+            _this.moveX = _this.v;
+        }, upEvent, upSelfEvent);
+        keydown_event(38, function () {
+            _this.boxBody.velocity[1] = 12;
+            _this.movieClip({
+                movieName: _this.movieArray[2],
+                playTime: 1,
+                frameRate: 30,
+                callback: function () {
+                    console.log('callback');
+                    _this.movieClip({
+                        movieName: _this.movieArray[0]
+                    });
+                }
+            });
+        }, upEvent, upSelfEvent);
+        keydown_event(40, function () {
+        }, upEvent, upSelfEvent);
+        keydown_event(67, function () {
+            _this.boxBody.velocity[1] = 12;
+        });
+    };
     return FartMan;
 }(ManBasic));
 __reflect(FartMan.prototype, "FartMan");

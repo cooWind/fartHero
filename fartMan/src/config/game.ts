@@ -6,4 +6,5 @@ class GameConfig {
     // 材料
     static manMaterial = new p2.Material(1);
     static wallMaterial = new p2.Material(2);
+    static domainUrl = 'https://cangnanshi.com/bingo/'
 }

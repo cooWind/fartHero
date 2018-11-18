@@ -13,13 +13,13 @@ class CameraBase {
     public x;
     public y;
     // 跟随偏移量
-    private offsetX = 200;
+    private offsetX = 700;
     private offsetY = 140;
     // 渲染相关值
     private renderWidth = 100;
     private renderOffsetX = 200;
     // 相机移动速度
-    private v = 200;
+    private v = 400;
     private bindBodys:Array<p2.Body>;
     private hashTiles = {}
     public camerSprite:egret.Sprite
@@ -34,19 +34,16 @@ class CameraBase {
     }
     public moveCamera() {
         // this.gameScene.x =
-        egret.Tween
-            .get(this.gameScene)
-            .to( {
-                x: (-this.fartMan.x + this.offsetX)
-            }, this.v, egret.Ease.quadIn ).call(()=>{
-            });
-        // this.gameScene.y = - this.fartMan.y + this.offsetY
+        const x = (-this.fartMan.x + this.offsetX)
+        if(x > 0)
+            return
+        egret.Tween.get(this.gameScene).to( {x}, this.v, egret.Ease.quadIn )
         this.gameScene.renderGameMap()
     }
     public createCamerMask(width, height) {
         var result: egret.Sprite = new egret.Sprite();
         result.graphics.beginFill(0x37827A);
-        result.graphics.drawRect(20,0,GameConfig.width - 40,GameConfig.height);
+        result.graphics.drawRect(0,0,GameConfig.width,GameConfig.height);
         result.graphics.endFill();
         result.anchorOffsetX = 0
         result.anchorOffsetY = 0
