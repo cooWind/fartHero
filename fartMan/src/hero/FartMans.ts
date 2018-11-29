@@ -1,5 +1,7 @@
 class FartMan extends ManBasic {
-    public v = .1;
+    // 状态
+    private state: State;
+    public v = .2;
     public width = 1
     public height = 2.38
     public position = [10,3]
@@ -10,6 +12,15 @@ class FartMan extends ManBasic {
         this.addHero()
         this.controlKey()
     }
+    public handleState(){
+        if(this.state){
+            this.state.handle(this);
+        }
+    }
+    public changeState(state: State) {
+        this.state = state
+        this.handleState()
+    }
     private addHero() {
         this.movieName = 'hero'
         this.movieScale = .5
@@ -18,36 +29,27 @@ class FartMan extends ManBasic {
     //键盘监听
     public controlKey(){
         let upEvent = (ev)=> {
-            this.moveX = 0           
+            console.log('upevent')
+            this.changeState(StandState.instance) 
         }
         function upSelfEvent() {
+            console.log('ok')
         }
         keydown_event(37,()=>{
-                this.moveX = -this.v;
-        },upEvent,upSelfEvent)
+            this.changeState(WorkLeftState.instance)
+        },upEvent, upSelfEvent)
         keydown_event(39,()=>{
-                this.moveX = this.v;
-        },upEvent,upSelfEvent)
+            this.changeState(WorkRightState.instance)
+        },upEvent, upSelfEvent)
         keydown_event(38,()=>{
-            this.boxBody.velocity[1] = 12;
-            this.movieClip({
-                movieName: this.movieArray[2],
-                playTime: 1,
-                frameRate: 30,
-                callback:() => {
-                    console.log('callback')
-                    this.movieClip({
-                        movieName: this.movieArray[0]
-                    })
-                }
-            })
-        },upEvent,upSelfEvent)
-        keydown_event(40,()=>{
-
-        },upEvent,upSelfEvent);
+            this.changeState(JumpState.instance)
+        }, upEvent, upSelfEvent)
         keydown_event(67,()=>{
             this.boxBody.velocity[1] = 12;
         });
+        keydown_event(40,()=>{
+            this.changeState(WorkLeftState.instance)
+        },upEvent, upSelfEvent)
     }
 
     public Update(dt:number) {

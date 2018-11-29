@@ -12,7 +12,7 @@ var FartMan = (function (_super) {
     __extends(FartMan, _super);
     function FartMan() {
         var _this = _super.call(this) || this;
-        _this.v = .1;
+        _this.v = .2;
         _this.width = 1;
         _this.height = 2.38;
         _this.position = [10, 3];
@@ -22,6 +22,15 @@ var FartMan = (function (_super) {
         _this.controlKey();
         return _this;
     }
+    FartMan.prototype.handleState = function () {
+        if (this.state) {
+            this.state.handle(this);
+        }
+    };
+    FartMan.prototype.changeState = function (state) {
+        this.state = state;
+        this.handleState();
+    };
     FartMan.prototype.addHero = function () {
         this.movieName = 'hero';
         this.movieScale = .5;
@@ -31,35 +40,27 @@ var FartMan = (function (_super) {
     FartMan.prototype.controlKey = function () {
         var _this = this;
         var upEvent = function (ev) {
-            _this.moveX = 0;
+            console.log('upevent');
+            _this.changeState(StandState.instance);
         };
         function upSelfEvent() {
+            console.log('ok');
         }
         keydown_event(37, function () {
-            _this.moveX = -_this.v;
+            _this.changeState(WorkLeftState.instance);
         }, upEvent, upSelfEvent);
         keydown_event(39, function () {
-            _this.moveX = _this.v;
+            _this.changeState(WorkRightState.instance);
         }, upEvent, upSelfEvent);
         keydown_event(38, function () {
-            _this.boxBody.velocity[1] = 12;
-            _this.movieClip({
-                movieName: _this.movieArray[2],
-                playTime: 1,
-                frameRate: 30,
-                callback: function () {
-                    console.log('callback');
-                    _this.movieClip({
-                        movieName: _this.movieArray[0]
-                    });
-                }
-            });
-        }, upEvent, upSelfEvent);
-        keydown_event(40, function () {
+            _this.changeState(JumpState.instance);
         }, upEvent, upSelfEvent);
         keydown_event(67, function () {
             _this.boxBody.velocity[1] = 12;
         });
+        keydown_event(40, function () {
+            _this.changeState(WorkLeftState.instance);
+        }, upEvent, upSelfEvent);
     };
     FartMan.prototype.Update = function (dt) {
         // TEMP 移动全部是临时方案
