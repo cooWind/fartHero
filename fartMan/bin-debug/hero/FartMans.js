@@ -22,15 +22,6 @@ var FartMan = (function (_super) {
         _this.controlKey();
         return _this;
     }
-    FartMan.prototype.handleState = function () {
-        if (this.state) {
-            this.state.handle(this);
-        }
-    };
-    FartMan.prototype.changeState = function (state) {
-        this.state = state;
-        this.handleState();
-    };
     FartMan.prototype.addHero = function () {
         this.movieName = 'hero';
         this.movieScale = .5;

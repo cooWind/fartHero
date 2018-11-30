@@ -1,4 +1,5 @@
 
 interface State{
-    handle(fart: FartMan);
+    nextState?:State;
+    handle(manager: Manager);
 }

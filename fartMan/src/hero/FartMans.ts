@@ -1,6 +1,4 @@
 class FartMan extends ManBasic {
-    // 状态
-    private state: State;
     public v = .2;
     public width = 1
     public height = 2.38
@@ -11,15 +9,6 @@ class FartMan extends ManBasic {
         super()
         this.addHero()
         this.controlKey()
-    }
-    public handleState(){
-        if(this.state){
-            this.state.handle(this);
-        }
-    }
-    public changeState(state: State) {
-        this.state = state
-        this.handleState()
     }
     private addHero() {
         this.movieName = 'hero'
@@ -36,7 +25,7 @@ class FartMan extends ManBasic {
             console.log('ok')
         }
         keydown_event(37,()=>{
-            this.changeState(WorkLeftState.instance)
+             this.changeState(WorkLeftState.instance)
         },upEvent, upSelfEvent)
         keydown_event(39,()=>{
             this.changeState(WorkRightState.instance)
@@ -45,7 +34,7 @@ class FartMan extends ManBasic {
             this.changeState(JumpState.instance)
         }, upEvent, upSelfEvent)
         keydown_event(67,()=>{
-            this.boxBody.velocity[1] = 12;
+            // this.boxBody.velocity[1] = 12;
         });
         keydown_event(40,()=>{
             this.changeState(WorkLeftState.instance)

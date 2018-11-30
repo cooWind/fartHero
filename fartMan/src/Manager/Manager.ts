@@ -3,6 +3,8 @@
  * 游戏里的一些元素，比如主角、怪物等都继承自这个上帝类
  */
 class Manager extends egret.Sprite {
+    // 状态
+    private state: State;
     private _mcData
     private _mcTexture
     public movie:egret.MovieClip
@@ -16,6 +18,22 @@ class Manager extends egret.Sprite {
     constructor() {
         super()
     }
+
+    public async handleState(){
+        if(this.state){
+            await this.state.handle(this);
+        }
+        // console.log('nextState')
+        // console.log(this.state)
+        // if(this.state.nextState) {
+        //     this.changeState(this.state.nextState)
+        //     this.handleState()
+        // }
+    }
+    public changeState(state: State) {
+        this.state = state
+        this.handleState()
+    }
     public addMovieClip(parent) {
         this.load(this.movieClip, parent)
     }
@@ -23,10 +41,10 @@ class Manager extends egret.Sprite {
         let count:number = 0;
         this.spriteParent = parent
         var self = this;
-        var check = function () {
+        var check = async function () {
             count++;
             if (count == 2) {
-                callback.call(self, {});
+                await callback.call(self, {});
             }
         }
         
@@ -53,7 +71,7 @@ class Manager extends egret.Sprite {
         loader.load(request);
     }
 
-    public movieClip(res):void {
+    public async movieClip(res) {
         let {
             movieName,
             playTime,
@@ -80,22 +98,22 @@ class Manager extends egret.Sprite {
         this.movie.scaleY =  this.movie.height / this.spriteParent.height
         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
         this.spriteParent.addChild(this.movie);
-        this.playMovie(playTime, callback)
+        await this.playMovie(playTime, callback)
     }
     /**
      * 播放次数
      */
     public playMovie(playTime, callback) {
-        console.log(playTime)
+        
         if(playTime) {
-            this.movie.addEventListener(egret.Event.COMPLETE,  (e:egret.Event) => {
-                console.log('callback')
-                callback && callback(this.movie)
-            }, this);
             this.movie.gotoAndPlay(0, playTime)
-            return
-        }   
-        this.movie.gotoAndPlay(0, -1);
-            
+        } else {
+            this.movie.gotoAndPlay(0, -1);
+        }
+        return new Promise((resolve)=>{
+            this.movie.addEventListener(egret.Event.COMPLETE,  (e:egret.Event) => {
+                resolve && resolve()
+            }, this);
+        })
     }
 }
