@@ -47,7 +47,7 @@ var FartMan = (function (_super) {
             _this.changeState(JumpState.instance);
         }, upEvent, upSelfEvent);
         keydown_event(67, function () {
-            _this.boxBody.velocity[1] = 12;
+            // this.boxBody.velocity[1] = 12;
         });
         keydown_event(40, function () {
             _this.changeState(WorkLeftState.instance);
