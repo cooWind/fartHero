@@ -13,7 +13,7 @@ var CameraBase = (function () {
         this.renderWidth = 100;
         this.renderOffsetX = 200;
         // 相机移动速度
-        this.v = 400;
+        this.v = 0;
         this.hashTiles = {};
         this.fartMan = fartMan;
         // Flat

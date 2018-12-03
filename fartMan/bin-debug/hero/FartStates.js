@@ -77,7 +77,7 @@ var JumpState = (function () {
                     case 0:
                         movieName = 'jump';
                         // 跳逻辑
-                        fartMan.boxBody.velocity[1] = 12;
+                        fartMan.boxBody.velocity[1] = 8;
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
                                 playTime: 1,

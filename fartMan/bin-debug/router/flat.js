@@ -87,7 +87,7 @@ var Flat = (function (_super) {
     // 创建物理世界
     Flat.prototype.createWorld = function () {
         this.world = new p2.World({
-            gravity: [0, -29.9]
+            gravity: [0, -9]
         });
         // this.world.sleepMode = p2.World.NO_SLEEPING;
         // 这玩意儿是求解器

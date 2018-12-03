@@ -19,7 +19,7 @@ class CameraBase {
     private renderWidth = 100;
     private renderOffsetX = 200;
     // 相机移动速度
-    private v = 400;
+    private v = 0;
     private bindBodys:Array<p2.Body>;
     private hashTiles = {}
     public camerSprite:egret.Sprite

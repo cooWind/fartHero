@@ -30,9 +30,9 @@ class Manager extends egret.Sprite {
         //     this.handleState()
         // }
     }
-    public changeState(state: State) {
+    public async changeState(state: State) {
         this.state = state
-        this.handleState()
+        await this.handleState()
     }
     public addMovieClip(parent) {
         this.load(this.movieClip, parent)

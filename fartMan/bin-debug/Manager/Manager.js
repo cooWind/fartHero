@@ -71,8 +71,18 @@ var Manager = (function (_super) {
         });
     };
     Manager.prototype.changeState = function (state) {
-        this.state = state;
-        this.handleState();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.state = state;
+                        return [4 /*yield*/, this.handleState()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     Manager.prototype.addMovieClip = function (parent) {
         this.load(this.movieClip, parent);
