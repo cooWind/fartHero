@@ -61,8 +61,52 @@ class Flat extends gameMap{
                 // console.log(val.position)
             })
         })
+        // 碰撞检测回调
+        this.world.on('beginContact',(ev)=>{
+            const id = this.fartMan.bodyId
+            const {
+                bodyA,
+                bodyB
+            } = ev
+            let bindBody, fartBody
+            if(bodyA.id === id) {
+                bindBody = bodyB
+                fartBody = bodyA
+            } else {
+                bindBody = bodyA
+                fartBody = bodyB
+            }
+            this.getPlayerContactPos()
+        })
     }
-    
+     private getPlayerContactPos():void{
+        const id = this.fartMan.bodyId
+
+        for(var i = 0;i < this.world.narrowphase.contactEquations.length;i++) {
+            let c: p2.ContactEquation = this.world.narrowphase.contactEquations[i];
+            console.log(c)
+            let pt: Array<number>, contactPos: Array<number>
+            console.log(c.bodyA.id, c.bodyB.id)
+            console.log(id)
+            if(c.bodyA.id ==id || c.bodyB.id == id) {
+                console.log('碰撞')
+            }
+            if(c.bodyA.id == id) {
+                pt = c.contactPointA;//pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyA.position[0] + pt[0],c.bodyA.position[1] + pt[1]];
+            }
+            if(c.bodyB.id == id) {
+                pt = c.contactPointB;//pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyB.position[0] + pt[0],c.bodyB.position[1] + pt[1]];
+            }
+            if(!contactPos) {
+                return
+            }
+            let x = contactPos[0] * 50
+            let y = contactPos[1] * 50
+            console.log(x, y)
+        }
+    }
     private createHero() {
         const {
             boxBody,

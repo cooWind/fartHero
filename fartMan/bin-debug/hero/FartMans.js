@@ -31,11 +31,9 @@ var FartMan = (function (_super) {
     FartMan.prototype.controlKey = function () {
         var _this = this;
         var upEvent = function (ev) {
-            console.log('upevent');
             _this.changeState(StandState.instance);
         };
         function upSelfEvent() {
-            console.log('ok');
         }
         keydown_event(37, function () {
             _this.changeState(WorkLeftState.instance);

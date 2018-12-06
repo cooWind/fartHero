@@ -3,8 +3,10 @@
  * 游戏里的一些元素，比如主角、怪物等都继承自这个上帝类
  */
 class Manager extends egret.Sprite {
-    // 状态
-    private state: State;
+    // 当前状态
+    public state: State;
+    // 上一状态
+    public lastState: State;
     private _mcData
     private _mcTexture
     public movie:egret.MovieClip
@@ -31,6 +33,7 @@ class Manager extends egret.Sprite {
         // }
     }
     public async changeState(state: State) {
+        this.lastState = this.state
         this.state = state
         await this.handleState()
     }
@@ -76,7 +79,9 @@ class Manager extends egret.Sprite {
             movieName,
             playTime,
             callback,
-            frameRate
+            frameRate,
+            skewX,
+            skewY
         } = res
         if(!movieName) {
             movieName = this.movieArray[0]
@@ -97,6 +102,10 @@ class Manager extends egret.Sprite {
         this.movie.scaleX =  this.movie.width / this.spriteParent.width
         this.movie.scaleY =  this.movie.height / this.spriteParent.height
         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
+        this.movie.anchorOffsetX = this.movie.width / 2;
+        this.movie.anchorOffsetY = .5;
+        this.movie.skewX = skewX ? skewX : 0
+        this.movie.skewY = skewY ? skewY : 0
         this.spriteParent.addChild(this.movie);
         await this.playMovie(playTime, callback)
     }

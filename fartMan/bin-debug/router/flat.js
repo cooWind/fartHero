@@ -86,6 +86,7 @@ var Flat = (function (_super) {
     };
     // 创建物理世界
     Flat.prototype.createWorld = function () {
+        var _this = this;
         this.world = new p2.World({
             gravity: [0, -9]
         });
@@ -112,6 +113,48 @@ var Flat = (function (_super) {
                 // console.log(val.position)
             });
         });
+        // 碰撞检测回调
+        this.world.on('beginContact', function (ev) {
+            var id = _this.fartMan.bodyId;
+            var bodyA = ev.bodyA, bodyB = ev.bodyB;
+            var bindBody, fartBody;
+            if (bodyA.id === id) {
+                bindBody = bodyB;
+                fartBody = bodyA;
+            }
+            else {
+                bindBody = bodyA;
+                fartBody = bodyB;
+            }
+            _this.getPlayerContactPos();
+        });
+    };
+    Flat.prototype.getPlayerContactPos = function () {
+        var id = this.fartMan.bodyId;
+        for (var i = 0; i < this.world.narrowphase.contactEquations.length; i++) {
+            var c = this.world.narrowphase.contactEquations[i];
+            console.log(c);
+            var pt = void 0, contactPos = void 0;
+            console.log(c.bodyA.id, c.bodyB.id);
+            console.log(id);
+            if (c.bodyA.id == id || c.bodyB.id == id) {
+                console.log('碰撞');
+            }
+            if (c.bodyA.id == id) {
+                pt = c.contactPointA; //pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyA.position[0] + pt[0], c.bodyA.position[1] + pt[1]];
+            }
+            if (c.bodyB.id == id) {
+                pt = c.contactPointB; //pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyB.position[0] + pt[0], c.bodyB.position[1] + pt[1]];
+            }
+            if (!contactPos) {
+                return;
+            }
+            var x = contactPos[0] * 50;
+            var y = contactPos[1] * 50;
+            console.log(x, y);
+        }
     };
     Flat.prototype.createHero = function () {
         var _a = this.fartMan.drawMan(), boxBody = _a.boxBody, display = _a.display;

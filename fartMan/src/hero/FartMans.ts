@@ -18,11 +18,9 @@ class FartMan extends ManBasic {
     //键盘监听
     public controlKey(){
         let upEvent = (ev)=> {
-            console.log('upevent')
             this.changeState(StandState.instance) 
         }
         function upSelfEvent() {
-            console.log('ok')
         }
         keydown_event(37,()=>{
              this.changeState(WorkLeftState.instance)

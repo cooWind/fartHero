@@ -13,12 +13,10 @@ r.prototype = e.prototype, t.prototype = new r();
 **/
 var ManBasic = (function (_super) {
     __extends(ManBasic, _super);
-    // public x;
-    // public y;
-    // public position = [0, 0]
-    // 主角的刚体对象
     function ManBasic() {
-        return _super.call(this) || this;
+        var _this = _super.call(this) || this;
+        _this.position = [0, 0];
+        return _this;
     }
     /**
      * 可以创建一个英雄对象，内置了白鹭的创建形状的方法,
@@ -44,6 +42,7 @@ var ManBasic = (function (_super) {
         });
         boxBody.addShape(boxShape);
         this.boxBody = boxBody;
+        this.bodyId = boxBody.id;
         //添加长方形刚体的显示对象   
         var display = this.createSprite(boxShape.width * 50, boxShape.height * 50);
         display.addEventListener(egret.Event.ADDED_TO_STAGE, function () {

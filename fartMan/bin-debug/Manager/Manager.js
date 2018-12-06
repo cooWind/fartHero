@@ -75,6 +75,7 @@ var Manager = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.lastState = this.state;
                         this.state = state;
                         return [4 /*yield*/, this.handleState()];
                     case 1:
@@ -129,11 +130,11 @@ var Manager = (function (_super) {
     };
     Manager.prototype.movieClip = function (res) {
         return __awaiter(this, void 0, void 0, function () {
-            var movieName, playTime, callback, frameRate, mcDataFactory;
+            var movieName, playTime, callback, frameRate, skewX, skewY, mcDataFactory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        movieName = res.movieName, playTime = res.playTime, callback = res.callback, frameRate = res.frameRate;
+                        movieName = res.movieName, playTime = res.playTime, callback = res.callback, frameRate = res.frameRate, skewX = res.skewX, skewY = res.skewY;
                         if (!movieName) {
                             movieName = this.movieArray[0];
                         }
@@ -152,6 +153,10 @@ var Manager = (function (_super) {
                         this.movie.scaleX = this.movie.width / this.spriteParent.width;
                         this.movie.scaleY = this.movie.height / this.spriteParent.height;
                         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
+                        this.movie.anchorOffsetX = this.movie.width / 2;
+                        this.movie.anchorOffsetY = .5;
+                        this.movie.skewX = skewX ? skewX : 0;
+                        this.movie.skewY = skewY ? skewY : 0;
                         this.spriteParent.addChild(this.movie);
                         return [4 /*yield*/, this.playMovie(playTime, callback)];
                     case 1:

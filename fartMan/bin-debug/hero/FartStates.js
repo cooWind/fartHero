@@ -39,19 +39,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 // 站立
 var StandState = (function () {
     function StandState() {
+        this.name = 'stand';
     }
     StandState.prototype.handle = function (fartMan) {
         return __awaiter(this, void 0, void 0, function () {
-            var movieName;
+            var movieName, skewY;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log('dont move');
                         fartMan.moveX = 0;
                         movieName = 'stand';
+                        skewY = 0;
+                        if (fartMan.lastState.name === 'workLeft') {
+                            skewY = 180;
+                        }
+                        else {
+                            skewY = 0;
+                        }
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
-                                frameRate: 10
+                                frameRate: 10,
+                                skewY: skewY
                             })];
                     case 1:
                         _a.sent();
@@ -67,6 +75,7 @@ __reflect(StandState.prototype, "StandState", ["State"]);
 // 跳
 var JumpState = (function () {
     function JumpState() {
+        this.name = 'jump';
         this.nextState = StandState.instance;
     }
     JumpState.prototype.handle = function (fartMan) {
@@ -81,10 +90,11 @@ var JumpState = (function () {
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
                                 playTime: 1,
-                                frameRate: 30
+                                frameRate: 10
                             })];
                     case 1:
                         _a.sent();
+                        fartMan.changeState(StandState.instance);
                         return [2 /*return*/];
                 }
             });
@@ -97,6 +107,7 @@ __reflect(JumpState.prototype, "JumpState", ["State"]);
 // 走右边
 var WorkRightState = (function () {
     function WorkRightState() {
+        this.name = 'workRight';
         this.nextState = StandState.instance;
     }
     WorkRightState.prototype.handle = function (fartMan) {
@@ -125,6 +136,7 @@ __reflect(WorkRightState.prototype, "WorkRightState", ["State"]);
 // 走左边
 var WorkLeftState = (function () {
     function WorkLeftState() {
+        this.name = 'workLeft';
         this.nextState = StandState.instance;
     }
     WorkLeftState.prototype.handle = function (fartMan) {
@@ -137,7 +149,8 @@ var WorkLeftState = (function () {
                         fartMan.moveX = -fartMan.v;
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
-                                frameRate: 10
+                                frameRate: 10,
+                                skewY: 180
                             })];
                     case 1:
                         _a.sent();

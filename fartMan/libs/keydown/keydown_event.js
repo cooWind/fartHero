@@ -29,7 +29,6 @@ var keydown_event = (function(){
 				arr[keyCode][1] = true;
 				arr2[keyCode][2]&&arr2[keyCode][2](keyCode); //自身事件
 				for(var i  =0;i<4;i++){
-					console.log(arr, direct[i])
 					if(!arr[direct[i]] || !arr[direct[i]][1])
 						return false;
 				}	
