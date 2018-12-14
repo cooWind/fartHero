@@ -1,0 +1,9 @@
+
+
+class GameInstance
+{
+    public constructor()
+    {
+
+    }
+}
