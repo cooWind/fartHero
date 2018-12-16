@@ -66,8 +66,9 @@ class Main extends eui.UILayer {
     }
     // 游戏所有的场景路由挂载在全局下
     private addRouter() {
-        const flat = new Flat(this)
-        this.addChild(flat)
+        //const flat = new Flat(this)
+        const currentGame = new GameInstance();
+        this.addChild(currentGame)
         // 当前容器作为顶级容器
         PageBus.init(this);
         /* 挂载路由 */

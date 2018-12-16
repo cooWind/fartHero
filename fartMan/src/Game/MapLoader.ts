@@ -11,11 +11,11 @@ class MapLoader {
     }
 
     public GetHeight():number {
-        return this.mTmxtileMap.$getWidth();
+        return this.mTmxtileMap.$getHeight();
     }
 
     public GetWidth():number {
-        return this.mTmxtileMap.$getHeight();
+        return this.mTmxtileMap.$getWidth();
     }
 
     public GetMinLayer():number {

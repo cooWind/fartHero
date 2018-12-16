@@ -116,8 +116,9 @@ var Main = (function (_super) {
     };
     // 游戏所有的场景路由挂载在全局下
     Main.prototype.addRouter = function () {
-        var flat = new Flat(this);
-        this.addChild(flat);
+        //const flat = new Flat(this)
+        var currentGame = new GameInstance();
+        this.addChild(currentGame);
         // 当前容器作为顶级容器
         PageBus.init(this);
         /* 挂载路由 */

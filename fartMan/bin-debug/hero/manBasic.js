@@ -13,10 +13,12 @@ r.prototype = e.prototype, t.prototype = new r();
 **/
 var ManBasic = (function (_super) {
     __extends(ManBasic, _super);
+    // public x;
+    // public y;
+    // public position = [0, 0]
+    // 主角的刚体对象
     function ManBasic() {
-        var _this = _super.call(this) || this;
-        _this.position = [0, 0];
-        return _this;
+        return _super.call(this) || this;
     }
     /**
      * 可以创建一个英雄对象，内置了白鹭的创建形状的方法,
@@ -38,7 +40,7 @@ var ManBasic = (function (_super) {
             fixedRotation: true,
             allowSleep: false,
             ccdIterations: 40,
-            ccdSpeedThreshold: 0
+            ccdSpeedThreshold: 0,
         });
         boxBody.addShape(boxShape);
         this.boxBody = boxBody;
@@ -52,7 +54,11 @@ var ManBasic = (function (_super) {
             }
         }, this);
         console.log(display);
-        //同步egret对象和p2对象     
+        //同步egret对象和p2对象   
+        display.x = this.x;
+        display.y = this.y;
+        boxBody.position[0] = this.x / 50;
+        boxBody.position[1] = (GameConfig.height - this.y) / 50;
         boxBody.displays = [display];
         return {
             boxBody: boxBody,
@@ -69,5 +75,5 @@ var ManBasic = (function (_super) {
         return result;
     };
     return ManBasic;
-}(Manager));
+}(Entity));
 __reflect(ManBasic.prototype, "ManBasic");

@@ -4,6 +4,8 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 var GameConfig = (function () {
     function GameConfig() {
     }
+    GameConfig.tileWidth = 96;
+    GameConfig.tileHeight = 96;
     // 材料
     GameConfig.manMaterial = new p2.Material(1);
     GameConfig.wallMaterial = new p2.Material(2);

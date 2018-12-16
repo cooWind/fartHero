@@ -1,4 +1,3 @@
-
 /**
  *  Entities
  */
@@ -10,8 +9,12 @@ class Entities
     private mPlayer:ManBasic;
     private mCamerabase:CameraBase;
 
-    public constructor()
+    public constructor(gameMap:GameMap)
     {
+        this.mMap = gameMap;
+    }
+
+    public Update(dt:number) {
 
     }
 }
