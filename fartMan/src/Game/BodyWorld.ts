@@ -4,7 +4,7 @@
  */
 class BodyWorldConfig
 {
-    public mGravity = -20.0;
+    public mGravity = -9.0;
     public mFactor = 50;
 }
 
@@ -30,19 +30,19 @@ class BodyWorld
           // 这玩意儿是求解器
         this.mWorld.solver = new p2.GSSolver() 
         this.mWorld.solver['iterations'] = 10
-        this.mWorld.solver['tolerance'] = 2
+        this.mWorld.solver['tolerance'] = 0
         // 设置摩擦力
         this.mWorld.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
-        this.mWorld.defaultContactMaterial.stiffness = Number.MAX_VALUE;
-        this.mWorld.defaultContactMaterial.relaxation = 0;
+        this.mWorld.defaultContactMaterial.stiffness = 1000000;
+        this.mWorld.defaultContactMaterial.relaxation = 4;
         this.mWorld.defaultContactMaterial.restitution = 0;
-        let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
-            friction : 1,
-            restitution: 0,
-            stiffness: Number.MAX_VALUE
-        });
-        this.mWorld.addContactMaterial(ContactMaterial)
+        // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
+        //     friction : 1,
+        //     restitution: 0,
+        //     stiffness: Number.MAX_VALUE
+        // });
+        // this.mWorld.addContactMaterial(ContactMaterial)
         this.mWorld.on('postBroadphase',(ev) => {
             const pairs = ev.pairs;
             pairs.forEach((val:p2.Body) => {
@@ -53,7 +53,7 @@ class BodyWorld
 
     public Update(dt:number): void
     {
-        this.mWorld.step(1/60, dt/1000, 10);
+        this.mWorld.step(1/80, dt/1000, 30);
 
         const factor = this.mConfig.mFactor;
         var len:number = this.mWorld.bodies.length;

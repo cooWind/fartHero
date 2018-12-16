@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "description_json,alter2_png,blue2_png,castleWall2_png,column12_png,doorRedStroked2_png,doorStroked2_png,grassLarge2_png,grassSmall2_png,keyGreenStroked2_png,keyRedStroked2_png,keyYellowStroked2_png,platform12_png,platform22_png,platformBase12_png,platformBase22_png,platformBlock12_png,platformBlock22_png,pushBlock12_png,pushBlock22_png,pushBlock32_png,jing_jpg,sky_png,tiles_png,tree_png,tree2_png,egret_icon_png,bg_jpg,description2_json,changE_json,change_png,change_json,goodL_json,goodL_png,walk_json,walk_png,jump_json,jump_png,stand_json,stand_png,monster_json,monster_png,hero_json,hero_png,lady_json,lady_png",
+			"keys": "description_json,alter2_png,blue2_png,castleWall2_png,column12_png,doorRedStroked2_png,doorStroked2_png,grassLarge2_png,grassSmall2_png,keyGreenStroked2_png,keyRedStroked2_png,keyYellowStroked2_png,platform12_png,platform22_png,platformBase12_png,platformBase22_png,platformBlock12_png,platformBlock22_png,pushBlock12_png,pushBlock22_png,pushBlock32_png,jing_jpg,sky_png,tiles_png,tree_png,tree2_png,egret_icon_png,bg_jpg,description2_json,changE_json,change_png,change_json,goodL_json,goodL_png,walk_json,walk_png,jump_json,jump_png,stand_json,stand_png,monster_json,monster_png,lady_json,lady_png",
 			"name": "preload"
 		}
 	],
@@ -250,16 +250,6 @@
 			"name": "monster_png",
 			"type": "image",
 			"url": "monster.png"
-		},
-		{
-			"name": "hero_json",
-			"type": "json",
-			"url": "hero.json"
-		},
-		{
-			"name": "hero_png",
-			"type": "image",
-			"url": "hero.png"
 		},
 		{
 			"name": "lady_json",
