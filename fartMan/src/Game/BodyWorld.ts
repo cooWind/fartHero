@@ -56,19 +56,6 @@ class BodyWorld
         this.mWorld.step(1/60, dt/1000, 10);
 
         const factor = this.mConfig.mFactor;
-        var len:number = this.mWorld.bodies.length;
-         for(var i: number = 0;i < len;i++) {
-            var body: p2.Body = this.mWorld.bodies[i];
-            if(!body) {
-                continue;
-            }
-
-            var display: egret.DisplayObject = body.displays[0];
-            display.x = body.position[0] * factor;                      
-            display.y = GameConfig.height - body.position[1] * factor;           
-            display.rotation = body.angle  * 180 / Math.PI;
-        }
-
         this.mAllEntityBodies.forEach(entity => {
             let body = entity.boxBody;
             if (body != null) {
@@ -97,11 +84,11 @@ class BodyWorld
                 const height= display.height * 2;
 
                 const x = body.position[0] * this.mConfig.mFactor - camera.x;
-                const y = body.position[1] * this.mConfig.mFactor - camera.y;
+                const y = (GameConfig.height - body.position[1] * this.mConfig.mFactor) - camera.y;
                 if (x < -width || 
                     y < -height || 
                     x > (GameConfig.width + width) || 
-                    y > (GameConfig.height + width))
+                    y > (GameConfig.height + height))
                 {
                     this.mWorld.removeBody(body);
                     delete this.mHashTileBodies[val];
