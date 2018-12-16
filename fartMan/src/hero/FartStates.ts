@@ -25,7 +25,7 @@ class JumpState implements State{
     name = 'jump'
     nextState = StandState.instance
     async handle(fartMan: FartMan){
-        const movieName = 'jump'
+        const movieName = 'stand'
         // 跳逻辑
         fartMan.boxBody.velocity[1] = 8;
         await fartMan.movieClip({
@@ -48,6 +48,23 @@ class WorkRightState implements State {
             movieName,
             frameRate: 10
         })
+    }
+}
+// 跳右边
+class jumpRightState implements State {
+    static readonly instance = new jumpRightState()
+    name = 'jumpRight'
+    nextState = StandState.instance
+    async handle(fartMan: FartMan) {
+        fartMan.moveX = fartMan.v;
+    }
+}
+// 跳右边
+class jumpLeftState implements State {
+    static readonly instance = new jumpLeftState()
+    name = 'jumpRight'
+    async handle(fartMan: FartMan) {
+        fartMan.moveX = -fartMan.v;
     }
 }
 // 走左边

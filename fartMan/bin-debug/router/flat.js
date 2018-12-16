@@ -94,23 +94,22 @@ var Flat = (function (_super) {
         // 这玩意儿是求解器
         this.world.solver = new p2.GSSolver();
         this.world.solver['iterations'] = 10;
-        this.world.solver['tolerance'] = 2;
+        this.world.solver['tolerance'] = 0;
         // 设置摩擦力
         this.world.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
-        this.world.defaultContactMaterial.stiffness = 9999999999999999999999;
+        this.world.defaultContactMaterial.stiffness = 1000000;
         this.world.defaultContactMaterial.relaxation = 4;
         this.world.defaultContactMaterial.restitution = 0;
-        var ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, {
-            friction: 1,
-            stiffness: 9999999999999999999999,
-            relaxation: 2
-        });
-        this.world.addContactMaterial(ContactMaterial);
+        // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
+        //     friction : 1,
+        //     stiffness: 9999999999999999999999,
+        //     relaxation: 2
+        // });
+        // this.world.addContactMaterial(ContactMaterial)
         this.world.on('postBroadphase', function (ev) {
             var pairs = ev.pairs;
             pairs.forEach(function (val) {
-                // console.log(val.position)
             });
         });
         // 碰撞检测回调

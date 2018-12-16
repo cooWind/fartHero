@@ -84,7 +84,7 @@ var JumpState = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        movieName = 'jump';
+                        movieName = 'stand';
                         // 跳逻辑
                         fartMan.boxBody.velocity[1] = 8;
                         return [4 /*yield*/, fartMan.movieClip({
@@ -133,6 +133,41 @@ var WorkRightState = (function () {
     return WorkRightState;
 }());
 __reflect(WorkRightState.prototype, "WorkRightState", ["State"]);
+// 跳右边
+var jumpRightState = (function () {
+    function jumpRightState() {
+        this.name = 'jumpRight';
+        this.nextState = StandState.instance;
+    }
+    jumpRightState.prototype.handle = function (fartMan) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                fartMan.moveX = fartMan.v;
+                return [2 /*return*/];
+            });
+        });
+    };
+    jumpRightState.instance = new jumpRightState();
+    return jumpRightState;
+}());
+__reflect(jumpRightState.prototype, "jumpRightState", ["State"]);
+// 跳右边
+var jumpLeftState = (function () {
+    function jumpLeftState() {
+        this.name = 'jumpRight';
+    }
+    jumpLeftState.prototype.handle = function (fartMan) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                fartMan.moveX = -fartMan.v;
+                return [2 /*return*/];
+            });
+        });
+    };
+    jumpLeftState.instance = new jumpLeftState();
+    return jumpLeftState;
+}());
+__reflect(jumpLeftState.prototype, "jumpLeftState", ["State"]);
 // 走左边
 var WorkLeftState = (function () {
     function WorkLeftState() {

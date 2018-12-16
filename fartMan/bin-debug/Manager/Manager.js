@@ -150,13 +150,14 @@ var Manager = (function (_super) {
                         this.movie.y = 0;
                         this.movie.rotation = this.rotation;
                         // 帧动画只能通过调整缩放来调整大小
-                        this.movie.scaleX = this.movie.width / this.spriteParent.width;
-                        this.movie.scaleY = this.movie.height / this.spriteParent.height;
+                        this.movie.scaleX = this.spriteParent.width / this.movie.width;
+                        this.movie.scaleY = this.spriteParent.height / this.movie.height;
                         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
-                        this.movie.anchorOffsetX = this.movie.width / 2;
+                        this.movie.anchorOffsetX = 0;
                         this.movie.anchorOffsetY = .5;
                         this.movie.skewX = skewX ? skewX : 0;
                         this.movie.skewY = skewY ? skewY : 0;
+                        this.movie.x = this.movie.skewX ? this.movie.width : 0;
                         this.spriteParent.addChild(this.movie);
                         return [4 /*yield*/, this.playMovie(playTime, callback)];
                     case 1:

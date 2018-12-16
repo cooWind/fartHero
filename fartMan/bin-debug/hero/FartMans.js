@@ -13,8 +13,8 @@ var FartMan = (function (_super) {
     function FartMan() {
         var _this = _super.call(this) || this;
         _this.v = .2;
-        _this.width = 1;
-        _this.height = 2.38;
+        _this.width = 1 * 2;
+        _this.height = 1.28 * 2;
         _this.position = [10, 3];
         // 移动累加值
         _this.moveX = 0;
@@ -23,24 +23,40 @@ var FartMan = (function (_super) {
         return _this;
     }
     FartMan.prototype.addHero = function () {
-        this.movieName = 'hero';
+        this.movieName = 'lady';
         this.movieScale = .5;
-        this.movieArray = ['stand', 'walk', 'jump'];
+        this.movieArray = ['stand', 'walk', 'stand'];
     };
     //键盘监听
     FartMan.prototype.controlKey = function () {
         var _this = this;
         var upEvent = function (ev) {
-            _this.changeState(StandState.instance);
+            // this.changeState(StandState.instance) 
         };
         function upSelfEvent() {
         }
         keydown_event(37, function () {
-            _this.changeState(WorkLeftState.instance);
-        }, upEvent, upSelfEvent);
+            if (_this.state === JumpState.instance) {
+                console.log('向右跳');
+                _this.changeState(jumpLeftState.instance);
+            }
+            else {
+                _this.changeState(WorkLeftState.instance);
+            }
+        }, upEvent, function () {
+            _this.changeState(StandState.instance);
+        });
         keydown_event(39, function () {
-            _this.changeState(WorkRightState.instance);
-        }, upEvent, upSelfEvent);
+            console.log('向右跳');
+            if (_this.state === jumpRightState.instance) {
+                _this.changeState(jumpRightState.instance);
+            }
+            else {
+                _this.changeState(WorkRightState.instance);
+            }
+        }, upEvent, function () {
+            _this.changeState(StandState.instance);
+        });
         keydown_event(38, function () {
             _this.changeState(JumpState.instance);
         }, upEvent, upSelfEvent);
