@@ -1,12 +1,11 @@
 /* 
     这是主角基类
 **/
-class ManBasic extends Manager{
-    public x;
-    public y;
+class ManBasic extends Entity{
+    // public x;
+    // public y;
+    // public position = [0, 0]
     // 主角的刚体对象
-    public boxBody: p2.Body
-    public position = [0, 0]
     public constructor(){
         super()
     }
@@ -29,7 +28,7 @@ class ManBasic extends Manager{
             fixedRotation: true,
             allowSleep: false,
             ccdIterations: 40,
-            ccdSpeedThreshold: 0
+            ccdSpeedThreshold: 0,
         });
         boxBody.addShape(boxShape);
         this.boxBody = boxBody
@@ -45,7 +44,12 @@ class ManBasic extends Manager{
             }
         },this);
         console.log(display)
-        //同步egret对象和p2对象     
+        //同步egret对象和p2对象   
+        display.x = this.x;
+        display.y = this.y;
+        boxBody.position[0] = this.x /  50;
+        boxBody.position[1] = (GameConfig.height - this.y) /  50;
+
         boxBody.displays = [display];
         return {
             boxBody: boxBody,

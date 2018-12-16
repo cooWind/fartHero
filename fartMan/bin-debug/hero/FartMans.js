@@ -12,7 +12,7 @@ var FartMan = (function (_super) {
     __extends(FartMan, _super);
     function FartMan() {
         var _this = _super.call(this) || this;
-        _this.v = .2;
+        _this.v = .1;
         _this.width = 1;
         _this.height = 2.38;
         _this.position = [10, 3];
@@ -60,6 +60,16 @@ var FartMan = (function (_super) {
         keydown_event(67, function () {
             _this.boxBody.velocity[1] = 12;
         });
+    };
+    FartMan.prototype.Update = function (dt) {
+        // TEMP 移动全部是临时方案
+        if (this.moveX != 0.0) {
+            this.boxBody.position[0] += this.moveX;
+        }
+        var camera = this.mCurrentMap.GetMapCamera();
+        this.boxBody.displays[0].x = this.x - camera.x;
+        this.boxBody.displays[0].y = this.y - camera.y;
+        //console.log(this.boxBody.position[0], this.boxBody.position[1], this.x, this.y);
     };
     return FartMan;
 }(ManBasic));

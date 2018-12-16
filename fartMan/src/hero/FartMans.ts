@@ -1,5 +1,5 @@
 class FartMan extends ManBasic {
-    public v = .2;
+    public v = .1;
     public width = 1
     public height = 2.38
     public position = [10,3]
@@ -48,5 +48,18 @@ class FartMan extends ManBasic {
         keydown_event(67,()=>{
             this.boxBody.velocity[1] = 12;
         });
+    }
+
+    public Update(dt:number) {
+        // TEMP 移动全部是临时方案
+        if (this.moveX != 0.0)
+        {
+            this.boxBody.position[0] += this.moveX;
+        }
+
+        const camera = this.mCurrentMap.GetMapCamera();
+        this.boxBody.displays[0].x = this.x - camera.x;
+        this.boxBody.displays[0].y = this.y - camera.y;
+        //console.log(this.boxBody.position[0], this.boxBody.position[1], this.x, this.y);
     }
 }

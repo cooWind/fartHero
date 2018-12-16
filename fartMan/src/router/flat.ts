@@ -26,7 +26,7 @@ class Flat extends gameMap{
         this.createWorld()
         this.bindP2Map()
         this.fartMan = new FartMan()
-        this.camerabase = new CameraBase(this.fartMan, this)
+        //this.camerabase = new CameraBase(this.fartMan, this)
         // 创建一个怪物
         this.monBasic = new MonsterMan()
         this.createMonster()

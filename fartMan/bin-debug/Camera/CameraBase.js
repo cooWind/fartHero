@@ -18,7 +18,6 @@ var CameraBase = (function () {
         this.fartMan = fartMan;
         // Flat
         this.gameScene = gameScene;
-        this.gameLayers = this.gameScene.gameLayers;
         this.camerSprite = this.createCamerMask(GameConfig.width, GameConfig.height);
         this.gameScene.parent.addChild(this.camerSprite);
         this.gameScene.mask = this.camerSprite;
@@ -29,7 +28,8 @@ var CameraBase = (function () {
         if (x > 0)
             return;
         egret.Tween.get(this.gameScene).to({ x: x }, this.v, egret.Ease.quadIn);
-        this.gameScene.renderGameMap();
+        this.gameScene.x = -600;
+        //this.gameScene.renderGameMap()
     };
     CameraBase.prototype.createCamerMask = function (width, height) {
         var result = new egret.Sprite();
