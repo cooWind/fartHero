@@ -45,6 +45,7 @@ class WorkRightState implements State {
     async handle(fartMan: FartMan) {
         const movieName = 'walk'        
         fartMan.moveX = fartMan.v;
+        fartMan.right++
         await fartMan.movieClip({
             movieName,
             frameRate: 10
@@ -76,6 +77,7 @@ class WorkLeftState implements State {
     async handle(fartMan: FartMan) {
         const movieName = 'walk'        
         fartMan.moveX = -fartMan.v;
+        fartMan.left++
         await fartMan.movieClip({
             movieName,
             frameRate: 10,

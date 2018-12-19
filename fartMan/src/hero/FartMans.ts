@@ -7,6 +7,9 @@ class FartMan extends ManBasic {
     public jumpNum = 1
     // 移动累加值
     public moveX = 0
+    public left = 0
+    public right = 0
+    public speed = 5
     public constructor(){
         super()
         this.addHero()
@@ -32,24 +35,17 @@ class FartMan extends ManBasic {
         function upSelfEvent() {
         }
         keydown_event(37,()=>{
-            if(this.state === JumpState.instance) {
-                console.log('向右跳')
-                this.changeState(jumpLeftState.instance)
-            } else {
                 this.changeState(WorkLeftState.instance)
-            }
         },upEvent, ()=>{
-            this.changeState(StandState.instance) 
+            // this.changeState(StandState.instance) 
+            this.left = 0
         })
         keydown_event(39,()=>{
-                console.log('向右跳')
-            if(this.state === jumpRightState.instance) {
-                this.changeState(jumpRightState.instance)
-            } else {
+            
                 this.changeState(WorkRightState.instance)
-            }
         },upEvent, ()=>{
-            this.changeState(StandState.instance) 
+            // this.changeState(StandState.instance) 
+            this.right = 0
         })
         keydown_event(38,()=>{
             // if(this.jumpNum <= 0) {
@@ -71,12 +67,14 @@ class FartMan extends ManBasic {
         // TEMP 移动全部是临时方案
         if (this.moveX != 0.0)
         {
-            this.boxBody.position[0] += this.moveX;
+           // this.boxBody.position[0] += this.moveX;
         }
 
         const camera = this.mCurrentMap.GetMapCamera();
+        this.boxBody.velocity[0] = this.speed * (this.right - this.left);
         this.boxBody.displays[0].x = this.x - camera.x;
         this.boxBody.displays[0].y = this.y - camera.y;
+        console.log(this.left, this.right)
         //console.log(this.boxBody.position[0], this.boxBody.position[1], this.x, this.y);
     }
 }

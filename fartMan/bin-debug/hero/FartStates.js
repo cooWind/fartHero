@@ -119,6 +119,7 @@ var WorkRightState = (function () {
                     case 0:
                         movieName = 'walk';
                         fartMan.moveX = fartMan.v;
+                        fartMan.right++;
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
                                 frameRate: 10
@@ -183,6 +184,7 @@ var WorkLeftState = (function () {
                     case 0:
                         movieName = 'walk';
                         fartMan.moveX = -fartMan.v;
+                        fartMan.left++;
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
                                 frameRate: 10,

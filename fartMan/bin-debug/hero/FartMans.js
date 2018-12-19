@@ -20,6 +20,9 @@ var FartMan = (function (_super) {
         _this.jumpNum = 1;
         // 移动累加值
         _this.moveX = 0;
+        _this.left = 0;
+        _this.right = 0;
+        _this.speed = 5;
         _this.addHero();
         _this.controlKey();
         return _this;
@@ -45,26 +48,16 @@ var FartMan = (function (_super) {
         function upSelfEvent() {
         }
         keydown_event(37, function () {
-            if (_this.state === JumpState.instance) {
-                console.log('向右跳');
-                _this.changeState(jumpLeftState.instance);
-            }
-            else {
-                _this.changeState(WorkLeftState.instance);
-            }
+            _this.changeState(WorkLeftState.instance);
         }, upEvent, function () {
-            _this.changeState(StandState.instance);
+            // this.changeState(StandState.instance) 
+            _this.left = 0;
         });
         keydown_event(39, function () {
-            console.log('向右跳');
-            if (_this.state === jumpRightState.instance) {
-                _this.changeState(jumpRightState.instance);
-            }
-            else {
-                _this.changeState(WorkRightState.instance);
-            }
+            _this.changeState(WorkRightState.instance);
         }, upEvent, function () {
-            _this.changeState(StandState.instance);
+            // this.changeState(StandState.instance) 
+            _this.right = 0;
         });
         keydown_event(38, function () {
             // if(this.jumpNum <= 0) {
@@ -84,11 +77,13 @@ var FartMan = (function (_super) {
     FartMan.prototype.Update = function (dt) {
         // TEMP 移动全部是临时方案
         if (this.moveX != 0.0) {
-            this.boxBody.position[0] += this.moveX;
+            // this.boxBody.position[0] += this.moveX;
         }
         var camera = this.mCurrentMap.GetMapCamera();
+        this.boxBody.velocity[0] = this.speed * (this.right - this.left);
         this.boxBody.displays[0].x = this.x - camera.x;
         this.boxBody.displays[0].y = this.y - camera.y;
+        console.log(this.left, this.right);
         //console.log(this.boxBody.position[0], this.boxBody.position[1], this.x, this.y);
     };
     return FartMan;
