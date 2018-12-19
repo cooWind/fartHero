@@ -1,7 +1,7 @@
 class FartMan extends ManBasic {
     public v = .1;
-    public width = .5 * 2
-    public height = 1.28 * 2
+    public width = 1
+    public height = 1
     public position = [10,3]
     // 跳跃次数
     public jumpNum = 1
@@ -16,9 +16,9 @@ class FartMan extends ManBasic {
         this.controlKey()
     }
     private addHero() {
-        this.movieName = 'lady'
+        this.movieName = 'hero'
         this.movieScale = .5
-        this.movieArray = ['stand', 'walk', 'stand']
+        this.movieArray = ['stand', 'walk', 'jump']
     }
     public addJumpNum():void {
         if(this.jumpNum <= 0) {
@@ -39,13 +39,23 @@ class FartMan extends ManBasic {
         },upEvent, ()=>{
             // this.changeState(StandState.instance) 
             this.left = 0
+            // 向左向右的速度都为0，并且不是跳跃状态就转换为站立状态
+            console.log(this.boxBody.velocity[0], this.state)
+            if(!this.right && this.state != jumpLeftState.instance) {
+                console.log('转换状态')
+                this.changeState(StandState.instance)
+            }
         })
         keydown_event(39,()=>{
             
                 this.changeState(WorkRightState.instance)
         },upEvent, ()=>{
-            // this.changeState(StandState.instance) 
+            // 
             this.right = 0
+            // 向左向右的速度都为0，并且不是跳跃状态就转换为站立状态
+            if(!this.left && this.state != jumpLeftState.instance) {
+                this.changeState(StandState.instance) 
+            }
         })
         keydown_event(38,()=>{
             // if(this.jumpNum <= 0) {
@@ -74,7 +84,6 @@ class FartMan extends ManBasic {
         this.boxBody.velocity[0] = this.speed * (this.right - this.left);
         this.boxBody.displays[0].x = this.x - camera.x;
         this.boxBody.displays[0].y = this.y - camera.y;
-        console.log(this.left, this.right)
         //console.log(this.boxBody.position[0], this.boxBody.position[1], this.x, this.y);
     }
 }

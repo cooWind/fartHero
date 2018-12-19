@@ -4,7 +4,7 @@
  */
 class BodyWorldConfig
 {
-    public mGravity = -18.0;
+    public mGravity = -30.0;
     public mFactor = 50;
 }
 
@@ -36,7 +36,7 @@ class BodyWorld
         this.mWorld.defaultContactMaterial.friction = 0;
         // 设置刚度，很硬的那种
         // this.mWorld.defaultContactMaterial.stiffness = 1000000;
-        // this.mWorld.defaultContactMaterial.relaxation = 4;
+        this.mWorld.defaultContactMaterial.relaxation = 4;
         this.mWorld.defaultContactMaterial.restitution = 0;
         // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
         //     friction : 1,
@@ -54,7 +54,7 @@ class BodyWorld
     
     public Update(dt:number): void
     {
-        this.mWorld.step(1/100, dt/1000, 10);
+        this.mWorld.step(1/60, dt/1000, 10);
         const factor = this.mConfig.mFactor;
         this.mAllEntityBodies.forEach(entity => {
             let body = entity.boxBody;

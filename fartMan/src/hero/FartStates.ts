@@ -14,7 +14,7 @@ class StandState implements State {
         }
         await fartMan.movieClip({
             movieName,
-            frameRate: 10,
+            frameRate: 1,
             skewY
         })
     }
@@ -26,7 +26,7 @@ class JumpState implements State{
     nextState = StandState.instance
     async handle(fartMan: FartMan){
         fartMan.jumpNum--
-        const movieName = 'stand'
+        const movieName = 'jump'
         // 跳逻辑
         fartMan.boxBody.velocity[1] = 12;
         await fartMan.movieClip({

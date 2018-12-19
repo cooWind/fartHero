@@ -113,8 +113,8 @@ class Manager extends egret.Sprite {
         }
         
         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
-        this.movie.anchorOffsetX = 0;
-        this.movie.anchorOffsetY = 0;
+        this.movie.anchorOffsetX = this.spriteParent.width / 2;
+        this.movie.anchorOffsetY = this.spriteParent.height / 2;
         this.movie.skewX = skewX ? skewX : 0
         this.movie.skewY = skewY ? skewY : 0
         this.movie.x = this.movie.skewY ? this.spriteParent.width : 0
