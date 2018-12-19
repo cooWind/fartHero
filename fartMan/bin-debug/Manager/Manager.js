@@ -130,11 +130,11 @@ var Manager = (function (_super) {
     };
     Manager.prototype.movieClip = function (res) {
         return __awaiter(this, void 0, void 0, function () {
-            var movieName, playTime, callback, frameRate, skewX, skewY, mcDataFactory;
+            var movieName, playTime, callback, frameRate, skewX, skewY, scaleX, scaleY, mcDataFactory;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        movieName = res.movieName, playTime = res.playTime, callback = res.callback, frameRate = res.frameRate, skewX = res.skewX, skewY = res.skewY;
+                        movieName = res.movieName, playTime = res.playTime, callback = res.callback, frameRate = res.frameRate, skewX = res.skewX, skewY = res.skewY, scaleX = res.scaleX, scaleY = res.scaleY;
                         if (!movieName) {
                             movieName = this.movieArray[0];
                         }
@@ -150,14 +150,24 @@ var Manager = (function (_super) {
                         this.movie.y = 0;
                         this.movie.rotation = this.rotation;
                         // 帧动画只能通过调整缩放来调整大小
-                        this.movie.scaleX = this.spriteParent.width / this.movie.width;
-                        this.movie.scaleY = this.spriteParent.height / this.movie.height;
+                        if (scaleX) {
+                            this.movie.scaleX = scaleX;
+                        }
+                        else {
+                            this.movie.scaleX = this.spriteParent.width / this.movie.width;
+                        }
+                        if (scaleY) {
+                            this.movie.scaleY = scaleY;
+                        }
+                        else {
+                            this.movie.scaleY = this.spriteParent.height / this.movie.height;
+                        }
                         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
                         this.movie.anchorOffsetX = 0;
-                        this.movie.anchorOffsetY = .5;
+                        this.movie.anchorOffsetY = 0;
                         this.movie.skewX = skewX ? skewX : 0;
                         this.movie.skewY = skewY ? skewY : 0;
-                        this.movie.x = this.movie.skewX ? this.movie.width : 0;
+                        this.movie.x = this.movie.skewY ? this.spriteParent.width : 0;
                         this.spriteParent.addChild(this.movie);
                         return [4 /*yield*/, this.playMovie(playTime, callback)];
                     case 1:

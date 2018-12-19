@@ -84,9 +84,10 @@ var JumpState = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        fartMan.jumpNum--;
                         movieName = 'stand';
                         // 跳逻辑
-                        fartMan.boxBody.velocity[1] = 8;
+                        fartMan.boxBody.velocity[1] = 12;
                         return [4 /*yield*/, fartMan.movieClip({
                                 movieName: movieName,
                                 playTime: 1,

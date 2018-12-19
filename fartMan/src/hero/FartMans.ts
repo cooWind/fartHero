@@ -1,8 +1,10 @@
 class FartMan extends ManBasic {
-    public v = .2;
-    public width = 1 * 2
+    public v = .1;
+    public width = .5 * 2
     public height = 1.28 * 2
     public position = [10,3]
+    // 跳跃次数
+    public jumpNum = 1
     // 移动累加值
     public moveX = 0
     public constructor(){
@@ -15,10 +17,17 @@ class FartMan extends ManBasic {
         this.movieScale = .5
         this.movieArray = ['stand', 'walk', 'stand']
     }
+    public addJumpNum():void {
+        if(this.jumpNum <= 0) {
+            this.jumpNum++
+        }
+        console.log(this.jumpNum)
+    }
     //键盘监听
     public controlKey(){
         let upEvent = (ev)=> {
             // this.changeState(StandState.instance) 
+            // this.moveX = 0
         }
         function upSelfEvent() {
         }
@@ -43,7 +52,12 @@ class FartMan extends ManBasic {
             this.changeState(StandState.instance) 
         })
         keydown_event(38,()=>{
-            this.changeState(JumpState.instance)
+            // if(this.jumpNum <= 0) {
+            //     return
+            // }
+            if(this.mCurrentMap.checkIfCanJump()) {
+                this.changeState(JumpState.instance)
+            }
         }, upEvent, upSelfEvent)
         keydown_event(67,()=>{
             // this.boxBody.velocity[1] = 12;

@@ -25,9 +25,10 @@ class JumpState implements State{
     name = 'jump'
     nextState = StandState.instance
     async handle(fartMan: FartMan){
+        fartMan.jumpNum--
         const movieName = 'stand'
         // 跳逻辑
-        fartMan.boxBody.velocity[1] = 8;
+        fartMan.boxBody.velocity[1] = 12;
         await fartMan.movieClip({
             movieName,
             playTime: 1,

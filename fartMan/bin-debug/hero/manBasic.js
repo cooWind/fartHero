@@ -33,7 +33,7 @@ var ManBasic = (function (_super) {
         });
         boxShape.material = GameConfig.manMaterial;
         var boxBody = new p2.Body({
-            mass: 1,
+            mass: 10,
             position: position,
             fixedRotation: true,
             allowSleep: false,

@@ -12,10 +12,12 @@ var FartMan = (function (_super) {
     __extends(FartMan, _super);
     function FartMan() {
         var _this = _super.call(this) || this;
-        _this.v = .2;
-        _this.width = 1 * 2;
+        _this.v = .1;
+        _this.width = .5 * 2;
         _this.height = 1.28 * 2;
         _this.position = [10, 3];
+        // 跳跃次数
+        _this.jumpNum = 1;
         // 移动累加值
         _this.moveX = 0;
         _this.addHero();
@@ -27,11 +29,18 @@ var FartMan = (function (_super) {
         this.movieScale = .5;
         this.movieArray = ['stand', 'walk', 'stand'];
     };
+    FartMan.prototype.addJumpNum = function () {
+        if (this.jumpNum <= 0) {
+            this.jumpNum++;
+        }
+        console.log(this.jumpNum);
+    };
     //键盘监听
     FartMan.prototype.controlKey = function () {
         var _this = this;
         var upEvent = function (ev) {
             // this.changeState(StandState.instance) 
+            // this.moveX = 0
         };
         function upSelfEvent() {
         }
@@ -58,7 +67,12 @@ var FartMan = (function (_super) {
             _this.changeState(StandState.instance);
         });
         keydown_event(38, function () {
-            _this.changeState(JumpState.instance);
+            // if(this.jumpNum <= 0) {
+            //     return
+            // }
+            if (_this.mCurrentMap.checkIfCanJump()) {
+                _this.changeState(JumpState.instance);
+            }
         }, upEvent, upSelfEvent);
         keydown_event(67, function () {
             // this.boxBody.velocity[1] = 12;

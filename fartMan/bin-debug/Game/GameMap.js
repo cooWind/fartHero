@@ -53,6 +53,7 @@ var GameMap = (function () {
     }
     GameMap.prototype.Load = function (gameInstance) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             var mapLoader, bodyWorldConfig;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -83,11 +84,81 @@ var GameMap = (function () {
                         this.mCamera.SetTracingEntity(this.mFartMan);
                         this.mBodyWorld.BindEntityBody(this.mFartMan);
                         this.mBodyWorld.BindP2Map(this.mTmxtileMap);
+                        // 主角碰撞检测回调
+                        this.mBodyWorld.mWorld.on('beginContact', function (ev) {
+                            var id = _this.mFartMan.bodyId;
+                            var bodyA = ev.bodyA, bodyB = ev.bodyB;
+                            var bindBody, fartBody;
+                            if (bodyA.id === id) {
+                                bindBody = bodyB;
+                                fartBody = bodyA;
+                            }
+                            else if (bodyB.id === id) {
+                                bindBody = bodyA;
+                                fartBody = bodyB;
+                            }
+                            else {
+                                return;
+                            }
+                            console.log(fartBody);
+                            _this.getPlayerContactPos();
+                        });
                         this.mIsLoaded = true;
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    GameMap.prototype.checkIfCanJump = function () {
+        for (var i = 0; i < this.mBodyWorld.mWorld.narrowphase.contactEquations.length; i++) {
+            var c = this.mBodyWorld.mWorld.narrowphase.contactEquations[i];
+            if (c.bodyA === this.mFartMan.boxBody || c.bodyB === this.mFartMan.boxBody) {
+                var d = c.normalA[1];
+                if (c.bodyA === this.mFartMan.boxBody)
+                    d *= -1;
+                if (d > 0.5)
+                    return true;
+            }
+        }
+        return false;
+    };
+    GameMap.prototype.getPlayerContactPos = function () {
+        var id = this.mFartMan.bodyId;
+        for (var i = 0; i < this.mBodyWorld.mWorld.narrowphase.contactEquations.length; i++) {
+            var c = this.mBodyWorld.mWorld.narrowphase.contactEquations[i];
+            console.log(c);
+            var pt = void 0, contactPos = void 0;
+            console.log(c.bodyA.id, c.bodyB.id);
+            console.log(id);
+            if (c.bodyA.id == id || c.bodyB.id == id) {
+                console.log('碰撞');
+            }
+            else {
+                return;
+            }
+            if (c.bodyA.id == id) {
+                console.log('主角是A');
+                pt = c.contactPointA; //pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyA.position[0] + pt[0], c.bodyA.position[1] + pt[1]];
+            }
+            if (c.bodyB.id == id) {
+                console.log('主角是B');
+                pt = c.contactPointB; //pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
+                contactPos = [c.bodyB.position[0] + pt[0], c.bodyB.position[1] + pt[1]];
+            }
+            if (!contactPos) {
+                return;
+            }
+            var x = Math.floor(contactPos[0] * 100);
+            var y = Math.floor(contactPos[1] * 100);
+            var x1 = Math.floor((this.mFartMan.boxBody.position[0] + this.mFartMan.width / 2) * 100);
+            var y1 = Math.floor((this.mFartMan.boxBody.position[1] - this.mFartMan.height / 2) * 100);
+            // 主角的脚碰到地板上了
+            if (y >= y1 && this.mFartMan.boxBody.velocity[1] === 0) {
+                this.mFartMan.addJumpNum();
+            }
+            // console.log(this.mFartMan.width, this.mFartMan.height)
+        }
     };
     GameMap.prototype.UnLoad = function () {
         console.log("Map Unloaded.");

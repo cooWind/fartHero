@@ -4,13 +4,13 @@
  */
 class BodyWorldConfig
 {
-    public mGravity = -9.0;
+    public mGravity = -18.0;
     public mFactor = 50;
 }
 
 class BodyWorld
 {
-    private mWorld:p2.World
+    public mWorld:p2.World
     private mCurrentMap:GameMap;
     private mConfig:BodyWorldConfig;
     private mHashTileBodies = {};
@@ -30,7 +30,7 @@ class BodyWorld
           // 这玩意儿是求解器
         this.mWorld.solver = new p2.GSSolver() 
         this.mWorld.solver['iterations'] = 10
-        this.mWorld.solver['tolerance'] = 0
+        this.mWorld.solver['tolerance'] = 2
         // 设置摩擦力
         this.mWorld.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
@@ -50,11 +50,10 @@ class BodyWorld
             })
         })
     }
-
+    
     public Update(dt:number): void
     {
-        this.mWorld.step(1/80, dt/1000, 30);
-
+        this.mWorld.step(1/60, dt/1000, 30);
         const factor = this.mConfig.mFactor;
         this.mAllEntityBodies.forEach(entity => {
             let body = entity.boxBody;

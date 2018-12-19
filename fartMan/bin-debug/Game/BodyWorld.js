@@ -6,7 +6,7 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
  */
 var BodyWorldConfig = (function () {
     function BodyWorldConfig() {
-        this.mGravity = -20.0;
+        this.mGravity = -18.0;
         this.mFactor = 50;
     }
     return BodyWorldConfig;
@@ -29,15 +29,15 @@ var BodyWorld = (function () {
         // 设置摩擦力
         this.mWorld.defaultContactMaterial.friction = 1;
         // 设置刚度，很硬的那种
-        this.mWorld.defaultContactMaterial.stiffness = Number.MAX_VALUE;
-        this.mWorld.defaultContactMaterial.relaxation = 0;
+        this.mWorld.defaultContactMaterial.stiffness = 1000000;
+        this.mWorld.defaultContactMaterial.relaxation = 4;
         this.mWorld.defaultContactMaterial.restitution = 0;
-        var ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, {
-            friction: 1,
-            restitution: 0,
-            stiffness: Number.MAX_VALUE
-        });
-        this.mWorld.addContactMaterial(ContactMaterial);
+        // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
+        //     friction : 1,
+        //     restitution: 0,
+        //     stiffness: Number.MAX_VALUE
+        // });
+        // this.mWorld.addContactMaterial(ContactMaterial)
         this.mWorld.on('postBroadphase', function (ev) {
             var pairs = ev.pairs;
             pairs.forEach(function (val) {
@@ -46,19 +46,8 @@ var BodyWorld = (function () {
         });
     }
     BodyWorld.prototype.Update = function (dt) {
-        this.mWorld.step(1 / 60, dt / 1000, 10);
+        this.mWorld.step(1 / 60, dt / 1000, 30);
         var factor = this.mConfig.mFactor;
-        var len = this.mWorld.bodies.length;
-        for (var i = 0; i < len; i++) {
-            var body = this.mWorld.bodies[i];
-            if (!body) {
-                continue;
-            }
-            var display = body.displays[0];
-            display.x = body.position[0] * factor;
-            display.y = GameConfig.height - body.position[1] * factor;
-            display.rotation = body.angle * 180 / Math.PI;
-        }
         this.mAllEntityBodies.forEach(function (entity) {
             var body = entity.boxBody;
             if (body != null) {
@@ -82,11 +71,11 @@ var BodyWorld = (function () {
                 var width = display.width * 2;
                 var height = display.height * 2;
                 var x = body.position[0] * _this.mConfig.mFactor - camera.x;
-                var y = body.position[1] * _this.mConfig.mFactor - camera.y;
+                var y = (GameConfig.height - body.position[1] * _this.mConfig.mFactor) - camera.y;
                 if (x < -width ||
                     y < -height ||
                     x > (GameConfig.width + width) ||
-                    y > (GameConfig.height + width)) {
+                    y > (GameConfig.height + height)) {
                     _this.mWorld.removeBody(body);
                     delete _this.mHashTileBodies[val];
                     console.log("Delete Body", x, y);

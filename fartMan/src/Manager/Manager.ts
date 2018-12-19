@@ -81,7 +81,9 @@ class Manager extends egret.Sprite {
             callback,
             frameRate,
             skewX,
-            skewY
+            skewY,
+            scaleX,
+            scaleY
         } = res
         if(!movieName) {
             movieName = this.movieArray[0]
@@ -99,14 +101,23 @@ class Manager extends egret.Sprite {
         this.movie.y = 0;
         this.movie.rotation = this.rotation
         // 帧动画只能通过调整缩放来调整大小
-        this.movie.scaleX =  this.spriteParent.width / this.movie.width 
-        this.movie.scaleY =  this.spriteParent.height / this.movie.height 
+        if(scaleX) {
+            this.movie.scaleX = scaleX
+        } else {
+            this.movie.scaleX =  this.spriteParent.width / this.movie.width 
+        }
+        if(scaleY) {
+            this.movie.scaleY =  scaleY
+        } else {
+            this.movie.scaleY =  this.spriteParent.height / this.movie.height
+        }
+        
         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
         this.movie.anchorOffsetX = 0;
-        this.movie.anchorOffsetY = .5;
+        this.movie.anchorOffsetY = 0;
         this.movie.skewX = skewX ? skewX : 0
         this.movie.skewY = skewY ? skewY : 0
-        this.movie.x = this.movie.skewX ? this.movie.width : 0
+        this.movie.x = this.movie.skewY ? this.spriteParent.width : 0
         this.spriteParent.addChild(this.movie);
         await this.playMovie(playTime, callback)
     }
