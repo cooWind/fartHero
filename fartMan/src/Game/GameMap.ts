@@ -10,7 +10,7 @@ class GameMap
 
     private mIsLoaded:boolean = false;
     private mIsStarted:boolean = false;
-    private mBodyWorld:BodyWorld;
+    public mBodyWorld:BodyWorld;
     private mCamera:TracingCamera;
     private mEntities:Entities;
 
@@ -81,61 +81,15 @@ class GameMap
             } else {
                 return
             }
-            console.log(fartBody)
-            this.getPlayerContactPos()
+            this.mFartMan.checkHit()
         })
         this.mIsLoaded = true;
     }
-    public checkIfCanJump(){
-        for(var i=0; i<this.mBodyWorld.mWorld.narrowphase.contactEquations.length; i++){
-            var c = this.mBodyWorld.mWorld.narrowphase.contactEquations[i];
-            if(c.bodyA === this.mFartMan.boxBody || c.bodyB === this.mFartMan.boxBody){
-            var d = c.normalA[1];
-            if(c.bodyA === this.mFartMan.boxBody) d *= -1;
-            if(d > 0.5) return true;
-            }
-        }
-        return false;
-    }
-    private getPlayerContactPos():void{
-        const id = this.mFartMan.bodyId
-
-        for(var i = 0;i < this.mBodyWorld.mWorld.narrowphase.contactEquations.length;i++) {
-            let c: p2.ContactEquation = this.mBodyWorld.mWorld.narrowphase.contactEquations[i];
-            console.log(c)
-            let pt: Array<number>, contactPos: Array<number>
-            console.log(c.bodyA.id, c.bodyB.id)
-            console.log(id)
-            if(c.bodyA.id ==id || c.bodyB.id == id) {
-                console.log('碰撞')
-            } else {
-                return
-            }
-            if(c.bodyA.id == id) {
-                console.log('主角是A')
-                pt = c.contactPointA;//pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
-                contactPos = [c.bodyA.position[0] + pt[0],c.bodyA.position[1] + pt[1]];
-            }
-            if(c.bodyB.id == id) {
-                console.log('主角是B')
-                pt = c.contactPointB;//pointA delta向量，上次使用contactPointB貌似没用对，用contactPointA就对了
-                contactPos = [c.bodyB.position[0] + pt[0],c.bodyB.position[1] + pt[1]];
-            }
-            if(!contactPos) {
-                return
-            }
-            const x = Math.floor(contactPos[0] * 100)
-            const y = Math.floor(contactPos[1] * 100)
-            const x1 = Math.floor((this.mFartMan.boxBody.position[0] + this.mFartMan.width / 2) * 100)
-            const y1 = Math.floor((this.mFartMan.boxBody.position[1] - this.mFartMan.height / 2) * 100)
-            // 主角的脚碰到地板上了
-            if(y >= y1 && this.mFartMan.boxBody.velocity[1] === 0) {
-                this.mFartMan.addJumpNum()
-            } 
-            
-            // console.log(this.mFartMan.width, this.mFartMan.height)
-        }
-    }
+    
+    /**
+     * 主角碰撞检测方法，先写在这里，后面把事件分发出去
+     */
+    
     public UnLoad() {
          console.log("Map Unloaded.");
         this.mIsLoaded = false;

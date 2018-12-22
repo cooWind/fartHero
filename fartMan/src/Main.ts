@@ -72,7 +72,7 @@ class Main extends eui.UILayer {
         // 当前容器作为顶级容器
         PageBus.init(this);
         /* 挂载路由 */
-        PageBus.pushPage({page:Flat,router:'flat'});
+        PageBus.pushPage({page:currentGame,router:'flat'});
     }
     private async loadResource() {
         try {

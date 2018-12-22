@@ -29,13 +29,12 @@ class BodyWorld
 
           // 这玩意儿是求解器
         this.mWorld.solver = new p2.GSSolver() 
-        // this.mWorld.solver['iterations'] = 10
-        // this.mWorld.solver['tolerance'] = 2
-        this.mWorld.setGlobalStiffness(Number.MAX_VALUE);
+        this.mWorld.solver['iterations'] = 10
+        this.mWorld.solver['tolerance'] = 2
         // 设置摩擦力
         this.mWorld.defaultContactMaterial.friction = 0;
         // 设置刚度，很硬的那种
-        // this.mWorld.defaultContactMaterial.stiffness = 1000000;
+        this.mWorld.defaultContactMaterial.stiffness = 1000000;
         this.mWorld.defaultContactMaterial.relaxation = 4;
         this.mWorld.defaultContactMaterial.restitution = 0;
         // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{

@@ -26,12 +26,11 @@ class ManBasic extends Entity{
         });
         boxShape.material = GameConfig.manMaterial
         const boxBody: p2.Body = new p2.Body({ 
-            mass: 10,
+            mass: 1,
             position:position,
             fixedRotation: true,
             allowSleep: false,
             ccdIterations: 40,
-            ccdSpeedThreshold: 0,
         });
         boxBody.addShape(boxShape);
         this.boxBody = boxBody

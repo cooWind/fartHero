@@ -14,8 +14,7 @@ class StandState implements State {
         }
         await fartMan.movieClip({
             movieName,
-            frameRate: 1,
-            skewY
+            frameRate: 1
         })
     }
 }
@@ -25,10 +24,10 @@ class JumpState implements State{
     name = 'jump'
     nextState = StandState.instance
     async handle(fartMan: FartMan){
-        fartMan.jumpNum--
         const movieName = 'jump'
         // 跳逻辑
-        fartMan.boxBody.velocity[1] = 12;
+        fartMan.boxBody.velocity[1] = 20;
+        
         await fartMan.movieClip({
             movieName,
             playTime: 1,
@@ -45,7 +44,8 @@ class WorkRightState implements State {
     async handle(fartMan: FartMan) {
         const movieName = 'walk'        
         fartMan.moveX = fartMan.v;
-        fartMan.right++
+        fartMan.right = 1
+        fartMan.boxBody.displays[0].skewY = 0
         await fartMan.movieClip({
             movieName,
             frameRate: 10
@@ -77,11 +77,11 @@ class WorkLeftState implements State {
     async handle(fartMan: FartMan) {
         const movieName = 'walk'        
         fartMan.moveX = -fartMan.v;
-        fartMan.left++
+        fartMan.left = 1
+        fartMan.boxBody.displays[0].skewY = 180
         await fartMan.movieClip({
             movieName,
-            frameRate: 10,
-            skewY: 180
+            frameRate: 10
         })
     }
 }
