@@ -10,7 +10,7 @@ class GameMap
 
     private mIsLoaded:boolean = false;
     private mIsStarted:boolean = false;
-    private mBodyWorld:BodyWorld;
+    public mBodyWorld:BodyWorld;
     private mCamera:TracingCamera;
     private mEntities:Entities;
 
@@ -64,10 +64,32 @@ class GameMap
 
         this.mBodyWorld.BindEntityBody(this.mFartMan);
         this.mBodyWorld.BindP2Map(this.mTmxtileMap);
-
+        // 主角碰撞检测回调
+        this.mBodyWorld.mWorld.on('beginContact',(ev)=>{
+            const id = this.mFartMan.bodyId
+            const {
+                bodyA,
+                bodyB
+            } = ev
+            let bindBody, fartBody
+            if(bodyA.id === id) {
+                bindBody = bodyB
+                fartBody = bodyA
+            } else if (bodyB.id === id){
+                bindBody = bodyA
+                fartBody = bodyB
+            } else {
+                return
+            }
+            this.mFartMan.checkHit()
+        })
         this.mIsLoaded = true;
     }
-
+    
+    /**
+     * 主角碰撞检测方法，先写在这里，后面把事件分发出去
+     */
+    
     public UnLoad() {
          console.log("Map Unloaded.");
         this.mIsLoaded = false;

@@ -29,11 +29,11 @@ var keydown_event = (function(){
 				arr[keyCode][1] = true;
 				arr2[keyCode][2]&&arr2[keyCode][2](keyCode); //自身事件
 				for(var i  =0;i<4;i++){
-					if(!arr[direct[i]][1])
+					if(!arr[direct[i]] || !arr[direct[i]][1])
 						return false;
 				}	
-		
 				arr2[keyCode][0]&&arr2[keyCode][0](keyCode); //按键共同事件
+				
 			})	
 		onoff = true;
 	}	

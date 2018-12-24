@@ -3,6 +3,10 @@
  * 游戏里的一些元素，比如主角、怪物等都继承自这个上帝类
  */
 class Manager extends egret.Sprite {
+    // 当前状态
+    public state: State;
+    // 上一状态
+    public lastState: State;
     private _mcData
     private _mcTexture
     public movie:egret.MovieClip
@@ -16,6 +20,23 @@ class Manager extends egret.Sprite {
     constructor() {
         super()
     }
+
+    public async handleState(){
+        if(this.state){
+            await this.state.handle(this);
+        }
+        // console.log('nextState')
+        // console.log(this.state)
+        // if(this.state.nextState) {
+        //     this.changeState(this.state.nextState)
+        //     this.handleState()
+        // }
+    }
+    public async changeState(state: State) {
+        this.lastState = this.state
+        this.state = state
+        await this.handleState()
+    }
     public addMovieClip(parent) {
         this.load(this.movieClip, parent)
     }
@@ -23,10 +44,10 @@ class Manager extends egret.Sprite {
         let count:number = 0;
         this.spriteParent = parent
         var self = this;
-        var check = function () {
+        var check = async function () {
             count++;
             if (count == 2) {
-                callback.call(self, {});
+                await callback.call(self, {});
             }
         }
         
@@ -53,12 +74,16 @@ class Manager extends egret.Sprite {
         loader.load(request);
     }
 
-    public movieClip(res):void {
+    public async movieClip(res) {
         let {
             movieName,
             playTime,
             callback,
-            frameRate
+            frameRate,
+            skewX,
+            skewY,
+            scaleX,
+            scaleY
         } = res
         if(!movieName) {
             movieName = this.movieArray[0]
@@ -76,26 +101,40 @@ class Manager extends egret.Sprite {
         this.movie.y = 0;
         this.movie.rotation = this.rotation
         // 帧动画只能通过调整缩放来调整大小
-        this.movie.scaleX =  this.movie.width / this.spriteParent.width
-        this.movie.scaleY =  this.movie.height / this.spriteParent.height
+        if(scaleX) {
+            this.movie.scaleX = scaleX
+        } else {
+            this.movie.scaleX =  this.spriteParent.width / this.movie.width 
+        }
+        if(scaleY) {
+            this.movie.scaleY =  scaleY
+        } else {
+            this.movie.scaleY =  this.spriteParent.height / this.movie.height
+        }
+        
         this.movie.frameRate = frameRate ? frameRate : this.frameRate;
+        this.movie.anchorOffsetX = this.spriteParent.width / 2;
+        this.movie.anchorOffsetY = this.spriteParent.height / 2;
+        this.movie.skewX = skewX ? skewX : 0
+        this.movie.skewY = skewY ? skewY : 0
+        this.movie.x = this.movie.skewY ? this.spriteParent.width : 0
         this.spriteParent.addChild(this.movie);
-        this.playMovie(playTime, callback)
+        await this.playMovie(playTime, callback)
     }
     /**
      * 播放次数
      */
     public playMovie(playTime, callback) {
-        console.log(playTime)
+        
         if(playTime) {
-            this.movie.addEventListener(egret.Event.COMPLETE,  (e:egret.Event) => {
-                console.log('callback')
-                callback && callback(this.movie)
-            }, this);
             this.movie.gotoAndPlay(0, playTime)
-            return
-        }   
-        this.movie.gotoAndPlay(0, -1);
-            
+        } else {
+            this.movie.gotoAndPlay(0, -1);
+        }
+        return new Promise((resolve)=>{
+            this.movie.addEventListener(egret.Event.COMPLETE,  (e:egret.Event) => {
+                resolve && resolve()
+            }, this);
+        })
     }
 }

@@ -6,6 +6,9 @@ class ManBasic extends Entity{
     // public y;
     // public position = [0, 0]
     // 主角的刚体对象
+    public boxBody: p2.Body
+    public bodyId: number
+    public position = [0, 0]
     public constructor(){
         super()
     }
@@ -28,10 +31,10 @@ class ManBasic extends Entity{
             fixedRotation: true,
             allowSleep: false,
             ccdIterations: 40,
-            ccdSpeedThreshold: 0,
         });
         boxBody.addShape(boxShape);
         this.boxBody = boxBody
+        this.bodyId = boxBody.id
         //添加长方形刚体的显示对象   
         var display: egret.DisplayObject = this.createSprite((<p2.Box>boxShape).width*50, (<p2.Box>boxShape).height*50);
 

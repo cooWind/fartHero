@@ -4,13 +4,13 @@
  */
 class BodyWorldConfig
 {
-    public mGravity = -20.0;
+    public mGravity = -30.0;
     public mFactor = 50;
 }
 
 class BodyWorld
 {
-    private mWorld:p2.World
+    public mWorld:p2.World
     private mCurrentMap:GameMap;
     private mConfig:BodyWorldConfig;
     private mHashTileBodies = {};
@@ -32,17 +32,17 @@ class BodyWorld
         this.mWorld.solver['iterations'] = 10
         this.mWorld.solver['tolerance'] = 2
         // 设置摩擦力
-        this.mWorld.defaultContactMaterial.friction = 1;
+        this.mWorld.defaultContactMaterial.friction = 0;
         // 设置刚度，很硬的那种
-        this.mWorld.defaultContactMaterial.stiffness = Number.MAX_VALUE;
-        this.mWorld.defaultContactMaterial.relaxation = 0;
+        this.mWorld.defaultContactMaterial.stiffness = 1000000;
+        this.mWorld.defaultContactMaterial.relaxation = 4;
         this.mWorld.defaultContactMaterial.restitution = 0;
-        let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
-            friction : 1,
-            restitution: 0,
-            stiffness: Number.MAX_VALUE
-        });
-        this.mWorld.addContactMaterial(ContactMaterial)
+        // let ContactMaterial = new p2.ContactMaterial(GameConfig.manMaterial, GameConfig.wallMaterial, <p2.ContactMaterialOptions>{
+        //     friction : 1,
+        //     restitution: 0,
+        //     stiffness: Number.MAX_VALUE
+        // });
+        // this.mWorld.addContactMaterial(ContactMaterial)
         this.mWorld.on('postBroadphase',(ev) => {
             const pairs = ev.pairs;
             pairs.forEach((val:p2.Body) => {
@@ -50,25 +50,11 @@ class BodyWorld
             })
         })
     }
-
+    
     public Update(dt:number): void
     {
         this.mWorld.step(1/60, dt/1000, 10);
-
         const factor = this.mConfig.mFactor;
-        var len:number = this.mWorld.bodies.length;
-         for(var i: number = 0;i < len;i++) {
-            var body: p2.Body = this.mWorld.bodies[i];
-            if(!body) {
-                continue;
-            }
-
-            var display: egret.DisplayObject = body.displays[0];
-            display.x = body.position[0] * factor;                      
-            display.y = GameConfig.height - body.position[1] * factor;           
-            display.rotation = body.angle  * 180 / Math.PI;
-        }
-
         this.mAllEntityBodies.forEach(entity => {
             let body = entity.boxBody;
             if (body != null) {
@@ -97,11 +83,11 @@ class BodyWorld
                 const height= display.height * 2;
 
                 const x = body.position[0] * this.mConfig.mFactor - camera.x;
-                const y = body.position[1] * this.mConfig.mFactor - camera.y;
+                const y = (GameConfig.height - body.position[1] * this.mConfig.mFactor) - camera.y;
                 if (x < -width || 
                     y < -height || 
                     x > (GameConfig.width + width) || 
-                    y > (GameConfig.height + width))
+                    y > (GameConfig.height + height))
                 {
                     this.mWorld.removeBody(body);
                     delete this.mHashTileBodies[val];
